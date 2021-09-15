@@ -15,6 +15,8 @@ import ForgotPassword from "./pages/Authentication/ForgetPassword"
 
 // Dashboard
 import Dashboard from "./pages/Dashboard/index"
+import OrderItems from './pages/Tables/DragDropTables'
+// import OrderItems from "./pages/OrderItems/index"
 
 // layouts Format
 import HorizontalLayout from "./components/HorizontalLayout/"
@@ -67,6 +69,7 @@ const App = props => {
               <>
                 <Route exact path={["/", "/dashboard"]} component={Dashboard} />
                 <Route exact path="/profile" component={UserProfile} />
+                <Route exact path="/order" component={OrderItems} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>
             )}

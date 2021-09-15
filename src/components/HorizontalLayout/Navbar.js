@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
-import { Row, Col, Collapse } from "reactstrap"
+import { Collapse } from "reactstrap"
 import { Link, withRouter } from "react-router-dom"
 import classname from "classnames"
 
@@ -12,50 +12,50 @@ import { connect } from "react-redux"
 const Navbar = props => {
 
   const [dashboard, setdashboard] = useState(false)
+  const [order, setOrder] = useState(false)
   const [app, setapp] = useState(false)
-  const [email, setemail] = useState(false)
 
-  useEffect(() => {
-    var matchingMenuItem = null
-    var ul = document.getElementById("navigation")
-    var items = ul.getElementsByTagName("a")
-    for (var i = 0; i < items.length; ++i) {
-      if (props.location.pathname === items[i].pathname) {
-        matchingMenuItem = items[i]
-        break
-      }
-    }
-    if (matchingMenuItem) {
-      activateParentDropdown(matchingMenuItem)
-    }
-  })
+  // useEffect(() => {
+  //   var matchingMenuItem = null
+  //   var ul = document.getElementById("navigation")
+  //   var items = ul.getElementsByClassName("navbar-dropdown-item")
+  //   for (var i = 0; i < items.length; ++i) {
+  //     if (props.location.pathname === items[i].pathname) {
+  //       matchingMenuItem = items[i]
+  //       break
+  //     }
+  //   }
+  //   if (matchingMenuItem) {
+  //     activateParentDropdown(matchingMenuItem)
+  //   }
+  // })
   
-  function activateParentDropdown(item) {
-    item.classList.add("active")
-    const parent = item.parentElement
-    if (parent) {
-      parent.classList.add("active") // li
-      const parent2 = parent.parentElement
-      parent2.classList.add("active") // li
-      const parent3 = parent2.parentElement
-      if (parent3) {
-        parent3.classList.add("active") // li
-        const parent4 = parent3.parentElement
-        if (parent4) {
-          parent4.classList.add("active") // li
-          const parent5 = parent4.parentElement
-          if (parent5) {
-            parent5.classList.add("active") // li
-            const parent6 = parent5.parentElement
-            if (parent6) {
-              parent6.classList.add("active") // li
-            }
-          }
-        }
-      }
-    }
-    return false
-  }
+  // function activateParentDropdown(item) {
+  //   item.classList.add("active")
+  //   const parent = item.parentElement
+  //   if (parent) {
+  //     parent.classList.add("active") // li
+  //     const parent2 = parent.parentElement
+  //     parent2.classList.add("active") // li
+  //     const parent3 = parent2.parentElement
+  //     if (parent3) {
+  //       parent3.classList.add("active") // li
+  //       const parent4 = parent3.parentElement
+  //       if (parent4) {
+  //         parent4.classList.add("active") // li
+  //         const parent5 = parent4.parentElement
+  //         if (parent5) {
+  //           parent5.classList.add("active") // li
+  //           const parent6 = parent5.parentElement
+  //           if (parent6) {
+  //             parent6.classList.add("active") // li
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return false
+  // }
 
   return (
     <React.Fragment>
@@ -74,14 +74,11 @@ const Navbar = props => {
                 <li className="nav-item dropdown">
                   <Link
                     className="nav-link dropdown-toggle arrow-none"
-                    onClick={e => {
-                      setdashboard(!dashboard)
-                    }}
+                    onClick={() => setdashboard(prevDashboard => !prevDashboard)}
                     to="/dashboard"
                   >
                     <i className="bx bx-home-circle me-2"></i>
-                    {props.t("Home")} {props.menuOpen}
-                    {/* <div className="arrow-down"></div> */}
+                    {props.t("Home")}
                   </Link>
                   {/* <div
                     className={classname("dropdown-menu", { show: dashboard })}
@@ -99,6 +96,17 @@ const Navbar = props => {
                       {props.t("Blog")}
                     </Link>
                   </div> */}
+                </li>
+
+                <li className="nav-item dropdown">
+                  <Link
+                    className="nav-link dropdown-toggle arrow-none"
+                    onClick={() => setOrder(prevOrder => !prevOrder)}
+                    to="/order"
+                  >
+                    <i className="bx bx-move-vertical me-2"></i>
+                    {props.t("Order")}
+                  </Link>
                 </li>
 
                 {/* <li className="nav-item dropdown">
@@ -210,18 +218,28 @@ const Navbar = props => {
 
                 <li className="nav-item dropdown">
                   <Link
-                    to="/#"
+                    to="/more"
                     onClick={e => {
                       e.preventDefault()
                       setapp(!app)
                     }}
-                    className="nav-link dropdown-togglez arrow-none"
+                    className="nav-link dropdown-togglez arrow-none navbar-dropdown-item"
                   >
-                    <i className="bx bx-customize me-2"></i>
-                    {props.t("Pages")} <div className="arrow-down"></div>
+                    <i className="bx bx-dots-horizontal-rounded me-2"></i>
+                    {props.t("More")}
+                    <div className="arrow-down"></div>
                   </Link>
                   <div className={classname("dropdown-menu", { show: app })}>
-                    <Link to="#" className="dropdown-item">None Yet</Link>
+                    <Link
+                      to="/more"
+                      onClick={e => {
+                        e.preventDefault()
+                        setapp(false)
+                      }}
+                      className="dropdown-item navbar-dropdown-item"
+                    >
+                      Nothing Here
+                    </Link>
                     {/* <Link to="#" className="dropdown-item">
                       {props.t("Calendar")}
                     </Link>
