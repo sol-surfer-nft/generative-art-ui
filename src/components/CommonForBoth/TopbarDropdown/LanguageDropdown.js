@@ -19,7 +19,7 @@ const LanguageDropdown = () => {
 
   useEffect(() => {
     const currentLanguage = localStorage.getItem("I18N_LANGUAGE");
-    setSelectedLang(currentLanguage);
+    setSelectedLang(currentLanguage || "en");
   }, [])
 
   const changeLanguageAction = lang => {
@@ -37,12 +37,8 @@ const LanguageDropdown = () => {
     <>
       <Dropdown isOpen={menu} toggle={toggle} className="d-inline-block">
         <DropdownToggle className="btn header-item " tag="button">
-          <img
-            src={get(languages, `${selectedLang}.flag`)}
-            alt="Skote"
-            height="16"
-            className="me-1"
-          />
+          <span>{selectedLang}</span>
+          <div className="arrow-down"></div>
         </DropdownToggle>
         <DropdownMenu className="language-switch dropdown-menu-end">
           {map(Object.keys(languages), key => (

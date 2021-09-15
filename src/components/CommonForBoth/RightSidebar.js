@@ -1,18 +1,18 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { Row, Col, FormGroup } from "reactstrap"
+// import { Row, Col, FormGroup } from "reactstrap"
 
-import { connect } from "react-redux"
-import {
-  changeLayout,
-  changeLayoutWidth,
-  changeSidebarTheme,
-  changeSidebarThemeImage,
-  changeSidebarType,
-  changePreloader,
-  changeTopbarTheme,
-  showRightSidebarAction,
-} from "../../store/actions"
+// import { connect } from "react-redux"
+// import {
+//   changeLayout,
+//   changeLayoutWidth,
+//   changeSidebarTheme,
+//   changeSidebarThemeImage,
+//   changeSidebarType,
+//   changePreloader,
+//   changeTopbarTheme,
+//   showRightSidebarAction,
+// } from "../../store/actions"
 
 //SimpleBar
 import SimpleBar from "simplebar-react"
@@ -22,31 +22,33 @@ import { Link } from "react-router-dom"
 import "../../components/CommonForBoth/rightbar.scss"
 
 //Import images
-import bgimg1 from "../../assets/images/sidebar/img1.jpg"
-import bgimg2 from "../../assets/images/sidebar/img2.jpg"
-import bgimg3 from "../../assets/images/sidebar/img3.jpg"
-import bgimg4 from "../../assets/images/sidebar/img4.jpg"
-import layout1 from "../../assets/images/layouts/layout-1.jpg"
-import layout2 from "../../assets/images/layouts/layout-2.jpg"
-import layout3 from "../../assets/images/layouts/layout-3.jpg"
+// import bgimg1 from "../../assets/images/sidebar/img1.jpg"
+// import bgimg2 from "../../assets/images/sidebar/img2.jpg"
+// import bgimg3 from "../../assets/images/sidebar/img3.jpg"
+// import bgimg4 from "../../assets/images/sidebar/img4.jpg"
+// import layout1 from "../../assets/images/layouts/layout-1.jpg"
+// import layout2 from "../../assets/images/layouts/layout-2.jpg"
+// import layout3 from "../../assets/images/layouts/layout-3.jpg"
 
 //constants
-import {
-  layoutTypes,
-  layoutWidthTypes,
-  topBarThemeTypes,
-  leftBarThemeImageTypes,
-  leftSidebarTypes,
-  leftSideBarThemeTypes,
-} from "../../constants/layout"
+// import {
+//   layoutTypes,
+//   layoutWidthTypes,
+//   topBarThemeTypes,
+//   leftBarThemeImageTypes,
+//   leftSidebarTypes,
+//   leftSideBarThemeTypes,
+// } from "../../constants/layout"
 
 const RightSidebar = props => {
+
   const onCloseRightBar = () => {
     const { onClose } = props
     if (onClose) {
       onClose()
     }
   }
+
   return (
     <React.Fragment>
       <SimpleBar style={{ height: "900px" }}>
@@ -66,7 +68,7 @@ const RightSidebar = props => {
 
           <hr className="my-0" />
 
-          <div className="p-4">
+          {/* <div className="p-4">
             <div className="radio-toolbar">
               <span className="mb-2 d-block">Layouts</span>
               <input
@@ -563,7 +565,7 @@ const RightSidebar = props => {
             >
               <i className="mdi mdi-cart ms-1" /> Purchase Now
             </Link>
-          </div>
+          </div> */}
         </div>
       </SimpleBar>
     </React.Fragment>
@@ -571,35 +573,37 @@ const RightSidebar = props => {
 }
 
 RightSidebar.propTypes = {
-  changeLayout: PropTypes.func,
-  changeLayoutWidth: PropTypes.func,
-  changePreloader: PropTypes.func,
-  changeSidebarTheme: PropTypes.func,
-  changeSidebarThemeImage: PropTypes.func,
-  changeSidebarType: PropTypes.func,
-  changeTopbarTheme: PropTypes.func,
-  isPreloader: PropTypes.any,
-  layoutType: PropTypes.any,
-  layoutWidth: PropTypes.any,
-  leftSideBarTheme: PropTypes.any,
-  leftSideBarThemeImage: PropTypes.any,
-  leftSideBarType: PropTypes.any,
-  showRightSidebarAction: PropTypes.func,
-  topbarTheme: PropTypes.any,
   onClose: PropTypes.func,
+  // changeLayout: PropTypes.func,
+  // changeLayoutWidth: PropTypes.func,
+  // changePreloader: PropTypes.func,
+  // changeSidebarTheme: PropTypes.func,
+  // changeSidebarThemeImage: PropTypes.func,
+  // changeSidebarType: PropTypes.func,
+  // changeTopbarTheme: PropTypes.func,
+  // isPreloader: PropTypes.any,
+  // layoutType: PropTypes.any,
+  // layoutWidth: PropTypes.any,
+  // leftSideBarTheme: PropTypes.any,
+  // leftSideBarThemeImage: PropTypes.any,
+  // leftSideBarType: PropTypes.any,
+  // showRightSidebarAction: PropTypes.func,
+  // topbarTheme: PropTypes.any,
 }
 
-const mapStateToProps = state => {
-  return { ...state.Layout }
-}
+export default RightSidebar;
 
-export default connect(mapStateToProps, {
-  changeLayout,
-  changeSidebarTheme,
-  changeSidebarThemeImage,
-  changeSidebarType,
-  changeLayoutWidth,
-  changeTopbarTheme,
-  changePreloader,
-  showRightSidebarAction,
-})(RightSidebar)
+// const mapStateToProps = state => {
+//   return { ...state.Layout }
+// }
+
+// export default connect(mapStateToProps, {
+//   changeLayout,
+//   changeSidebarTheme,
+//   changeSidebarThemeImage,
+//   changeSidebarType,
+//   changeLayoutWidth,
+//   changeTopbarTheme,
+//   changePreloader,
+//   showRightSidebarAction,
+// })(RightSidebar)

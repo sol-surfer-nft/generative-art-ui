@@ -18,7 +18,7 @@ import NotificationDropdown from "../CommonForBoth/TopbarDropdown/NotificationDr
 import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 import RightSidebar from "../CommonForBoth/RightSidebar"
 
-import megamenuImg from "../../assets/images/megamenu-img.png"
+// import megamenuImg from "../../assets/images/megamenu-img.png"
 import logo from "../../assets/images/logo.svg"
 import logoLight from "../../assets/images/logo-light.png"
 import logoLightSvg from "../../assets/images/logo-light.svg"
@@ -36,7 +36,7 @@ import slack from "../../assets/images/brands/slack.png"
 import { withTranslation } from "react-i18next"
 
 const Header = props => {
-  const [menu, setMenu] = useState(false)
+  // const [menu, setMenu] = useState(false)
   const [isSearch, setSearch] = useState(false)
   const [socialDrp, setsocialDrp] = useState(false)
   const [position, setPosition] = useState();
@@ -125,7 +125,7 @@ const Header = props => {
               </div>
             </form>
 
-            <Dropdown
+            {/* <Dropdown
               className="dropdown-mega d-none d-lg-block ms-2"
               isOpen={menu}
               toggle={() => setMenu(!menu)}
@@ -270,7 +270,7 @@ const Header = props => {
                   </Col>
                 </Row>
               </DropdownMenu>
-            </Dropdown>
+            </Dropdown> */}
           </div>
 
           <div className="d-flex">
@@ -373,7 +373,7 @@ const Header = props => {
               </DropdownMenu>
             </Dropdown>
 
-            <div className="dropdown d-none d-lg-inline-block ms-1">
+            {/* <div className="dropdown d-none d-lg-inline-block ms-1">
               <button
                 type="button"
                 className="btn header-item noti-icon "
@@ -384,7 +384,7 @@ const Header = props => {
               >
                 <i className="bx bx-fullscreen" />
               </button>
-            </div>
+            </div> */}
 
             <NotificationDropdown />
 
@@ -392,11 +392,12 @@ const Header = props => {
 
             <div className="dropdown d-inline-block">
               <button
-                onClick={toggleTopDrawer} disabled={open}
+                onClick={toggleTopDrawer}
+                disabled={open}
                 type="button"
                 className="btn header-item noti-icon right-bar-toggle "
               >
-                <i className="bx bx-cog bx-spin" />
+                <i className="bx bx-cog" />
               </button>
             </div>
           </div>

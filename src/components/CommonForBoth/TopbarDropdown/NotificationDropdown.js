@@ -28,7 +28,7 @@ const NotificationDropdown = props => {
           tag="button"
           id="page-header-notifications-dropdown"
         >
-          <i className="bx bx-bell bx-tada" />
+          <i className="bx bx-bell" />
           <span className="badge bg-danger rounded-pill">3</span>
         </DropdownToggle>
 

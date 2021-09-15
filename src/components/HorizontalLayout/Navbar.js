@@ -26,7 +26,7 @@ const Navbar = props => {
   const [table, settable] = useState(false)
   const [chart, setchart] = useState(false)
   const [icon, seticon] = useState(false)
-  const [map, setmap] = useState(false)
+  // const [map, setmap] = useState(false)
   const [extra, setextra] = useState(false)
   const [invoice, setinvoice] = useState(false)
   const [auth, setauth] = useState(false)
@@ -97,10 +97,10 @@ const Navbar = props => {
                     to="/dashboard"
                   >
                     <i className="bx bx-home-circle me-2"></i>
-                    {props.t("Dashboard")} {props.menuOpen}
-                    <div className="arrow-down"></div>
+                    {props.t("Home")} {props.menuOpen}
+                    {/* <div className="arrow-down"></div> */}
                   </Link>
-                  <div
+                  {/* <div
                     className={classname("dropdown-menu", { show: dashboard })}
                   >
                     <Link to="/dashboard" className="dropdown-item">
@@ -115,10 +115,10 @@ const Navbar = props => {
                     <Link to="#" className="dropdown-item">
                       {props.t("Blog")}
                     </Link>
-                  </div>
+                  </div> */}
                 </li>
 
-                <li className="nav-item dropdown">
+                {/* <li className="nav-item dropdown">
                   <Link
                     to="/#"
                     onClick={e => {
@@ -223,7 +223,7 @@ const Navbar = props => {
                       </Col>
                     </Row>
                   </div>
-                </li>
+                </li> */}
 
                 <li className="nav-item dropdown">
                   <Link
@@ -235,7 +235,7 @@ const Navbar = props => {
                     className="nav-link dropdown-togglez arrow-none"
                   >
                     <i className="bx bx-customize me-2"></i>
-                    {props.t("Apps")} <div className="arrow-down"></div>
+                    {props.t("Pages")} <div className="arrow-down"></div>
                   </Link>
                   <div className={classname("dropdown-menu", { show: app })}>
                     <Link to="#" className="dropdown-item">
@@ -306,7 +306,7 @@ const Navbar = props => {
                         </div>
                       </div>
                     </div>
-                    <div className="dropdown">
+                    {/* <div className="dropdown">
                       <Link
                         to="/#"
                         className="dropdown-item dropdown-toggle arrow-none"
@@ -508,11 +508,11 @@ const Navbar = props => {
                           {props.t("Blog Details")}
                         </Link>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </li>
 
-                <li className="nav-item dropdown">
+                {/* <li className="nav-item dropdown">
                   <Link
                     to="/#"
                     className="nav-link dropdown-toggle arrow-none"
@@ -838,7 +838,7 @@ const Navbar = props => {
                       </div>
                     </div>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </Collapse>
           </nav>

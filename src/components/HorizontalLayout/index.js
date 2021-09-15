@@ -119,7 +119,7 @@ Layout.propTypes = {
   changeLayout: PropTypes.func,/*  */
   changeLayoutWidth: PropTypes.func,
   changeTopbarTheme: PropTypes.func,
-  children: PropTypes.object,
+  children: PropTypes.array,
   isPreloader: PropTypes.any,
   layoutWidth: PropTypes.any,
   location: PropTypes.object,
