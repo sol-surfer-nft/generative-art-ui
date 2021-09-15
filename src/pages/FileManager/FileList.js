@@ -14,16 +14,30 @@ import {
   Form,
   Row,
   UncontrolledDropdown,
+  Modal,
 } from "reactstrap"
-import {
-  Menu,
-  Item,
-  Separator,
-  useContextMenu
-} from "react-contexify";
+import { useContextMenu } from "react-contexify";
+import classNames from "classnames"
 
+const StyledFolderCard = styled(Card)`
+  cursor: pointer;
+
+  &.active-item-card.border {
+    border: 1px solid #556ee6 !important;
+  }
+
+  &:hover {
+    .file-card-title {
+      text-decoration: underline;
+    }
+  }
+`
 const StyledFileCard = styled(Card)`
   cursor: pointer;
+
+  &.active-item-card.border {
+    border: 1px solid #556ee6 !important;
+  }
 
   &:hover {
     .file-card-title {
@@ -32,59 +46,56 @@ const StyledFileCard = styled(Card)`
   }
 `
 
-const CONTEXT_MENU_ID = "menu-id";
-
 // file: id, name, file, Gb
+
+const FOLDER_MENU_ID = "folder-menu-id"
+const FILE_MENU_ID = "file-menu-id"
 
 const FileList = () => {
   const [folders, setFolders] = useRecoilState(foldersState)
   const files = useRecoilValue(filesState)
+  
+  const { show } = useContextMenu();
 
-  const { show } = useContextMenu({
-    id: CONTEXT_MENU_ID
-  });
-
+  const [modal, setModal] = useState(false)
   const [fileSearch, setFileSearch] = useState("")
+  const [selectedItem, setSelectedItem] = useState("") // id of file or folder selected
+
+  useEffect(() => {
+
+    return () => {
+      if(setSelectedItem) setSelectedItem("")
+      if(setFileSearch) setFileSearch("")
+      if(setModal) setModal(false)
+    }
+  }, [])
 
   const handleSearchChange = (e) => setFileSearch(e.target.value)
 
   const onFileCardClick = (fileId) => {
     console.log('clicked file card with id:', fileId)
+    setSelectedItem(fileId)
 
     // Open modal? Open containing files?
   }
+
+  const onFolderCardClick = folderId => {
+    console.log('clicked folder card with id:', folderId)
+    setSelectedItem(folderId)
+
+    // Open modal? Open containing files?
+  }
+
 
   const removeFolder = folderId => {
     setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId))
   }
 
-  function handleItemClick({ event, props, triggerEvent, data }){
-    // console.log(event, props, triggerEvent, data );
-    console.log("props:", props)
-    switch(event.currentTarget.id) {
-      case "open":
-        openFile(props.id);
-        break;
-      case "edit":
-        editFile(props.id);
-        break;
-      case "rename":
-        renameFile(props.id);
-        break;
-      case "remove":
-        removeFolder(props.id);
-        break;
-      default:
-        console.log('unknown option');
-        break;
-    }
-  }
-
-  function displayMenu(e, id){
+  function displayMenu(e, id, MENU_ID = FILE_MENU_ID){
     console.log('display menu:', e, 'for folder with id:', id)
     // put whatever custom logic you need
     // you can even decide to not display the Menu
-    show(e, { props: { id } });
+    show(e, { id: MENU_ID, props: { id } });
   }
 
   const openFile = (fileId) => {
@@ -99,23 +110,14 @@ const FileList = () => {
     console.log('renameFile not implemented yet')
   }
 
+  const toggleModal = () => {
+    setModal(prev => !prev)
+    // remove body css
+    document.body.classList.add("no_padding");
+  }
+
   return (
     <React.Fragment>
-      <Menu id={CONTEXT_MENU_ID}>
-        <Item id="open" onClick={handleItemClick}>
-          Open
-        </Item>
-        <Item id="edit" onClick={handleItemClick}>
-          Edit
-        </Item>
-        <Item id="rename" onClick={handleItemClick}>
-          Rename
-        </Item>
-        <Separator />
-        <Item id="remove" onClick={handleItemClick}>
-          Remove
-        </Item>
-      </Menu>
 
       {/* Files List Header */}
       <div>
@@ -166,18 +168,61 @@ const FileList = () => {
         </Row>
       </div>
 
+      {/* Centered Modal with Backdrop */}
+      <Modal
+        isOpen={modal}
+        toggle={() => {
+          toggleModal();
+        }}
+        centered={true}
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0">Center Modal</h5>
+          <button
+            type="button"
+            onClick={() => {
+              setModal(false);
+            }}
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <p>
+            Cras mattis consectetur purus sit amet fermentum.
+            Cras justo odio, dapibus ac facilisis in, egestas
+            eget quam. Morbi leo risus, porta ac consectetur
+            ac, vestibulum at eros.
+          </p>
+          <p>
+            Praesent commodo cursus magna, vel scelerisque
+            nisl consectetur et. Vivamus sagittis lacus vel
+            augue laoreet rutrum faucibus dolor auctor.
+          </p>
+          <p className="mb-0">
+            Aenean lacinia bibendum nulla sed consectetur.
+            Praesent commodo cursus magna, vel scelerisque
+            nisl consectetur et. Donec sed odio dui. Donec
+            ullamcorper nulla non metus auctor fringilla.
+          </p>
+        </div>
+      </Modal>
+
       {/* Files Grid */}
       <div>
         <Row>
           {fileSearch && folders.filter(folder => folder.name.toLowerCase().includes(fileSearch.toLowerCase())).map(folder => (
             <Col xl={4} sm={6} key={folder.id}>
-              <StyledFileCard
-                className="shadow-none border"
-                onClick={onFileCardClick}
-                onContextMenu={(e) => displayMenu(e, folder.id)}
+              <StyledFolderCard
+                className={classNames("shadow-none border", { "active-item-card": selectedItem === folder.id })}
+                onClick={() => onFolderCardClick(folder.id)}
+                onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
               >
                 <CardBody className="p-3">
-                  <div className="">
+                  <div className="folder-card-inner">
                     <div className="float-end ms-2">
                       <UncontrolledDropdown className="mb-2" direction="left">
                         <DropdownToggle
@@ -226,7 +271,7 @@ const FileList = () => {
                     </div>
                   </div>
                 </CardBody>
-              </StyledFileCard>
+              </StyledFolderCard>
             </Col>
           ))}
 
@@ -234,9 +279,9 @@ const FileList = () => {
           {fileSearch && files.filter(file => file.name.toLowerCase().includes(fileSearch.toLowerCase())).map(file => (
             <Col xl={4} sm={6} key={file.id}>
               <StyledFileCard
-                className="shadow-none border"
-                onClick={onFileCardClick}
-                onContextMenu={(e) => displayMenu(e, file.id)}
+                className={classNames("shadow-none border", { "active-item-card": selectedItem === file.id })}
+                onClick={() => onFileCardClick(file.id)}
+                onContextMenu={(e) => displayMenu(e, file.id, FILE_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">
@@ -291,10 +336,10 @@ const FileList = () => {
 
           {!fileSearch && folders.map(folder => (
             <Col xl={4} sm={6} key={folder.id}>
-              <StyledFileCard
-                className="shadow-none border"
-                onClick={onFileCardClick}
-                onContextMenu={(e) => displayMenu(e, folder.id)}
+              <StyledFolderCard
+                className={classNames("shadow-none border", { "active-item-card": selectedItem === folder.id })}
+                onClick={() => onFolderCardClick(folder.id)}
+                onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">
@@ -346,16 +391,16 @@ const FileList = () => {
                     </div>
                   </div>
                 </CardBody>
-              </StyledFileCard>
+              </StyledFolderCard>
             </Col>
           ))}
 
           {!fileSearch && files.map(file => (
             <Col xl={4} sm={6} key={file.id}>
               <StyledFileCard
-                className="shadow-none border"
-                onClick={onFileCardClick}
-                onContextMenu={(e) => displayMenu(e, file.id)}
+                className={classNames("shadow-none border", { "active-item-card": selectedItem === file.id })}
+                onClick={() => onFileCardClick(file.id)}
+                onContextMenu={(e) => displayMenu(e, file.id, FILE_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">

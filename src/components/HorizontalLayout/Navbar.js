@@ -13,6 +13,7 @@ const Navbar = props => {
 
   const [dashboard, setdashboard] = useState(false)
   const [order, setOrder] = useState(false)
+  const [preview, setPreview] = useState(false)
   const [app, setapp] = useState(false)
 
   // useEffect(() => {
@@ -106,6 +107,17 @@ const Navbar = props => {
                   >
                     <i className="bx bx-move-vertical me-2"></i>
                     {props.t("Order")}
+                  </Link>
+                </li>
+
+                <li className="nav-item dropdown">
+                  <Link
+                    className="nav-link dropdown-toggle arrow-none"
+                    onClick={() => setPreview(prevPreview => !prevPreview)}
+                    to="/preview"
+                  >
+                    <i className="bx bx-move-vertical me-2"></i>
+                    {props.t("Preview")}
                   </Link>
                 </li>
 

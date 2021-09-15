@@ -72,7 +72,7 @@ const UserProfile = props => {
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}
-          <Breadcrumb title="Skote" breadcrumbItem="Profile" />
+          <Breadcrumb title="SolSurfer" breadcrumbItem="Profile" />
 
           <Row>
             <Col lg="12">

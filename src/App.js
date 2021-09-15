@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/Authentication/ForgetPassword"
 
 // Dashboard
 import Dashboard from "./pages/Dashboard/index"
+import Preview from "./pages/Preview/index"
 import OrderItems from './pages/Tables/DragDropTables'
 // import OrderItems from "./pages/OrderItems/index"
 
@@ -78,6 +79,7 @@ const App = props => {
                 <Route exact path={["/", "/dashboard"]} component={Dashboard} />
                 <Route exact path="/profile" component={UserProfile} />
                 <Route exact path="/order" component={OrderItems} />
+                <Route exact path="/preview" component={Preview} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>
             )}

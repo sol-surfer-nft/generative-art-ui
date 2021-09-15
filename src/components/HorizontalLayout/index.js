@@ -38,7 +38,7 @@ const Layout = (props) => {
     let currentage = title.charAt(1).toUpperCase() + title.slice(2)
 
     document.title =
-      currentage + " | Skote - React Admin & Dashboard Template"
+      currentage + " | Generative Art Platform by SolSurfer"
   }, [props.location.pathname]);
 
   useEffect(() => {

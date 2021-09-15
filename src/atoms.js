@@ -10,10 +10,19 @@ export const globalState = atom({
   default: initialState
 })
 
+export const modalState = atom({
+  key: "global-modal",
+  default: {
+    open: false,
+    name: "" // unique
+  }
+})
+
 export const filesState = selector({
   key: "files",
   get: ({get}) => {
     const folders = get(foldersState)
+    const rootFiles = get(rootFilesState)
 
     const foldersReducer = (previousValue, currentValue) => {
       // if previous is []
@@ -21,12 +30,28 @@ export const filesState = selector({
       return [...previousValue, ...currentValue.files.map(file => ({...file, folderId: currentValue.id, folderName: currentValue.name }))] 
     }
 
-    const derivedFiles = folders.reduce(foldersReducer, []);
+    const derivedFiles = folders.reduce(foldersReducer, rootFiles);
 
     console.log('derived files:', derivedFiles)
 
     return derivedFiles
   }
+})
+
+export const rootFilesState = atom({
+  key: "root-files",
+  default: [
+    {
+      id: nanoid(),
+      name: "root-file-1",
+      gb: 0.5
+    },
+    {
+      id: nanoid(),
+      name: "root-file-2",
+      gb: 2
+    }
+  ]
 })
 
 export const foldersState = atom({

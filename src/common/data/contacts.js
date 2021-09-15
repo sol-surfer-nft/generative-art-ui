@@ -156,14 +156,14 @@ const userProfile = {
   projects: [
     {
       id: 1,
-      name: "Skote admin UI",
+      name: "SolSurfer admin UI",
       startDate: "2 Sep, 2019",
       deadline: "20 Oct, 2019",
       budget: "$506",
     },
     {
       id: 2,
-      name: "Skote admin Logo",
+      name: "SolSurfer admin Logo",
       startDate: "1 Sep, 2019",
       deadline: "2 Sep, 2019",
       budget: "$94",

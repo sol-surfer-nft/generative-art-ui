@@ -65,7 +65,7 @@ const PagesComingsoon = () => {
                     </div>
                   </Col>
                 </Row>
-                <h4 className="mt-5">Let&apos;s get started with Skote</h4>
+                <h4 className="mt-5">Let&apos;s get started with SolSurfer</h4>
                 <p className="text-muted">
                   It will be as simple as Occidental in fact it will be
                   Occidental.
