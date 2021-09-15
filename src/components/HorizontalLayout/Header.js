@@ -51,32 +51,32 @@ const Header = props => {
     setOpen(false);
   }
 
-  function toggleFullscreen() {
-    if (
-      !document.fullscreenElement &&
-      /* alternative standard method */ !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement
-    ) {
-      // current working methods
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen()
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen()
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        )
-      }
-    } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen()
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen()
-      } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen()
-      }
-    }
-  }
+  // function toggleFullscreen() {
+  //   if (
+  //     !document.fullscreenElement &&
+  //     /* alternative standard method */ !document.mozFullScreenElement &&
+  //     !document.webkitFullscreenElement
+  //   ) {
+  //     // current working methods
+  //     if (document.documentElement.requestFullscreen) {
+  //       document.documentElement.requestFullscreen()
+  //     } else if (document.documentElement.mozRequestFullScreen) {
+  //       document.documentElement.mozRequestFullScreen()
+  //     } else if (document.documentElement.webkitRequestFullscreen) {
+  //       document.documentElement.webkitRequestFullscreen(
+  //         Element.ALLOW_KEYBOARD_INPUT
+  //       )
+  //     }
+  //   } else {
+  //     if (document.cancelFullScreen) {
+  //       document.cancelFullScreen()
+  //     } else if (document.mozCancelFullScreen) {
+  //       document.mozCancelFullScreen()
+  //     } else if (document.webkitCancelFullScreen) {
+  //       document.webkitCancelFullScreen()
+  //     }
+  //   }
+  // }
   return (
     <React.Fragment>
       <header id="page-topbar">
@@ -331,7 +331,7 @@ const Header = props => {
                 <div className="px-lg-2">
                   <Row className="no-gutters">
                     <Col>
-                      <Link className="dropdown-icon-item" to="#">
+                      <Link className="dropdown-icon-item" to="https://github.com/sol-surfer-nft" target="_blank">
                         <img src={github} alt="Github" />
                         <span>GitHub</span>
                       </Link>
