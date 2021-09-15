@@ -1,6 +1,5 @@
 import React from "react"
-import { Card, CardBody, Container } from "reactstrap"
-import MetaTags from 'react-meta-tags';
+import { Card, CardBody } from "reactstrap"
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
@@ -8,55 +7,12 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 // import Component
 import FileLeftBar from "./FileLeftBar"
 import FileList from "./FileList"
-import RecentFile from "./RecentFile"
+import RecentFiles from "./RecentFiles"
 import Storage from "./Storage"
 
-const Index = () => {
+const FileManager = () => {
   const series = [76]
-  const options = {
-    chart: {
-      height: 150,
-      type: "radialBar",
-      sparkline: {
-        enabled: true,
-      },
-    },
-    colors: ["#556ee6"],
-    plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        track: {
-          background: "#e7e7e7",
-          strokeWidth: "97%",
-          margin: 5, // margin is in pixels
-        },
-
-        hollow: {
-          size: "60%",
-        },
-
-        dataLabels: {
-          name: {
-            show: false,
-          },
-          value: {
-            offsetY: -2,
-            fontSize: "16px",
-          },
-        },
-      },
-    },
-    grid: {
-      padding: {
-        top: -10,
-      },
-    },
-    stroke: {
-      dashArray: 3,
-    },
-    labels: ["Storage"],
-  }
+  
   return (
     <React.Fragment>
       <Breadcrumbs title="Apps" breadcrumbItem="NFT Tool" breadcrumbTitle="NFT Tool (demo)" />
@@ -68,15 +24,64 @@ const Index = () => {
               <Card>
                 <CardBody>
                   <FileList />
-                  <RecentFile />
+                  <RecentFiles />
                 </CardBody>
               </Card>
             </div>
           </div>
         </div>
-        <Storage options={options} series={series} />
+        <Storage
+          options={storageChartOptions}
+          series={series}
+        />
       </div>
     </React.Fragment>
   )
 }
-export default Index
+
+const storageChartOptions = {
+  labels: ["Storage"],
+  chart: {
+    height: 150,
+    type: "radialBar",
+    sparkline: {
+      enabled: true,
+    },
+  },
+  colors: ["#556ee6"],
+  plotOptions: {
+    radialBar: {
+      startAngle: -90,
+      endAngle: 90,
+      track: {
+        background: "#e7e7e7",
+        strokeWidth: "97%",
+        margin: 5, // margin is in pixels
+      },
+
+      hollow: {
+        size: "60%",
+      },
+
+      dataLabels: {
+        name: {
+          show: false,
+        },
+        value: {
+          offsetY: -2,
+          fontSize: "16px",
+        },
+      },
+    },
+  },
+  grid: {
+    padding: {
+      top: -10,
+    },
+  },
+  stroke: {
+    dashArray: 3,
+  },
+}
+
+export default FileManager

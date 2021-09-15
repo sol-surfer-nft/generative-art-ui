@@ -45,7 +45,7 @@ const ProjectsGrid = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Projects Grid | Skote - React Admin & Dashboard Template
+            Projects Grid | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid>

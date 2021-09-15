@@ -49,7 +49,7 @@ const ProjectsCreate = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Create New Projects | Skote - React Admin & Dashboard Template</title>
+          <title>Create New Projects | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

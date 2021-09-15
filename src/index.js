@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom"
 import "./i18n"
 import { Provider } from "react-redux"
 import { RecoilRoot } from 'recoil'
+import "react-contexify/dist/ReactContexify.css";
 
 import store from "./store"
 

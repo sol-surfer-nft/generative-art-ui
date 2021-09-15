@@ -41,7 +41,7 @@ const EditableTables = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Editable Table | Skote - React Admin & Dashboard Template</title>
+          <title>Editable Table | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <div className="container-fluid">
           <Breadcrumbs title="Tables" breadcrumbItem="Editable Table" />

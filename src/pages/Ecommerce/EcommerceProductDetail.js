@@ -133,7 +133,7 @@ const EcommerceProductDetail = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Product Detail | Skote - React Admin & Dashboard Template
+            Product Detail | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid>

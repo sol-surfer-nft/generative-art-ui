@@ -38,7 +38,7 @@ const Register = props => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Register | Skote - React Admin & Dashboard Template</title>
+        <title>Register | Generative NFT Platform by SolSurfer</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">

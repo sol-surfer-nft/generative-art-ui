@@ -47,7 +47,7 @@ const FormUpload = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Form File Upload | Skote - React Admin & Dashboard Template</title>
+          <title>Form File Upload | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Forms" breadcrumbItem="Form File Upload" />

@@ -32,7 +32,7 @@ const UiImages = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Images | Skote - React Admin & Dashboard Template</title>
+          <title>Images | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Images" />

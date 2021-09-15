@@ -64,7 +64,7 @@ const Login = props => {
   return (
     <React.Fragment>
       <MetaTags>
-        <title>Login | Skote - React Admin & Dashboard Template</title>
+        <title>Login | Generative NFT Platform by SolSurfer</title>
       </MetaTags>
       <div className="home-btn d-none d-sm-block">
         <Link to="/" className="text-dark">

@@ -52,7 +52,7 @@ const FormRepeater = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Form Repeater | Skote - React Admin & Dashboard Template
+            Form Repeater | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid={true}>

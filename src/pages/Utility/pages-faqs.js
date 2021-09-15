@@ -27,7 +27,7 @@ const PagesFaqs = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>FAQs | Skote - React Admin & Dashboard Template</title>
+          <title>FAQs | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

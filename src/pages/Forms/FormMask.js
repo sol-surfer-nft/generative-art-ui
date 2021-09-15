@@ -123,7 +123,7 @@ const FormMask = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Form Mask | Skote - React Admin & Dashboard Template</title>
+          <title>Form Mask | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="Forms" breadcrumbItem="Form Mask" />

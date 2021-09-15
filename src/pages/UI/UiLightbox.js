@@ -49,7 +49,7 @@ const UiLightbox = () => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Lightbox | Skote - React Admin & Dashboard Template</title>
+          <title>Lightbox | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid={true}>
           <Breadcrumbs title="UI Elements" breadcrumbItem="Lightbox" />

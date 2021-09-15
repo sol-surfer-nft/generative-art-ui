@@ -133,7 +133,7 @@ const ProjectsList = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Projects List | Skote - React Admin & Dashboard Template
+            Projects List | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid>

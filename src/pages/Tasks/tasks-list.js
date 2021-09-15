@@ -33,7 +33,7 @@ const TasksList = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Task List | Skote - React Admin & Dashboard Template</title>
+          <title>Task List | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Tasks" breadcrumbItem="Task List" />

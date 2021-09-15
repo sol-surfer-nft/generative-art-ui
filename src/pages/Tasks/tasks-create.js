@@ -53,7 +53,7 @@ const TasksCreate = () => {
     <>
       <div className="page-content">
         <MetaTags>
-          <title>Create Task | Skote - React Admin & Dashboard Template</title>
+          <title>Create Task | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumbs */}

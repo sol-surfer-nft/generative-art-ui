@@ -19,7 +19,7 @@ const UiTypography = () => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Typography | Skote - React Admin & Dashboard Template
+            Typography | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid={true}>

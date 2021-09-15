@@ -44,7 +44,7 @@ const ProjectsOverview = props => {
       <div className="page-content">
         <MetaTags>
           <title>
-            Project Overview | Skote - React Admin & Dashboard Template
+            Project Overview | Generative NFT Platform by SolSurfer
           </title>
         </MetaTags>
         <Container fluid>

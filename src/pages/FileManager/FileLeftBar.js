@@ -1,21 +1,121 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import { useRecoilState } from 'recoil'
+import { filesState } from '../../atoms'
+import styled from 'styled-components'
 import {
   Card,
   CardBody,
   Collapse,
   DropdownMenu,
   DropdownToggle,
+  DropdownItem,
   UncontrolledAlert,
   UncontrolledDropdown,
 } from "reactstrap"
+import { nanoid } from 'nanoid'
+import {
+  Menu,
+  Item,
+  Separator,
+  useContextMenu
+} from "react-contexify";
 
+const CONTEXT_MENU_ID = "menu-id";
+
+const StyledFile = styled.li`
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+// file: id, name, file, Gb
 const FileRightBar = () => {
   const [isOpen, setIsOpen] = useState(true)
 
+  const [files, setFiles] = useRecoilState(filesState)
+
+  const { show } = useContextMenu({
+    id: CONTEXT_MENU_ID
+  });
+
   const toggle = () => setIsOpen(!isOpen)
+
+  const addFolder = () => setFiles([
+    ...files,
+    {
+      id: nanoid(),
+      name: "Untitled",
+      Gb: 0,
+      file: "23"
+    }
+  ])
+
+  const addFile = fileId => {
+    console.log("not implemented yet")
+  }
+
+  function handleItemClick({ event, props, triggerEvent, data }){
+    // console.log(event, props, triggerEvent, data );
+    console.log("props:", props)
+    switch(event.currentTarget.id) {
+      case "open":
+        openFile(props.id);
+        break;
+      case "edit":
+        editFile(props.id);
+        break;
+      case "rename":
+        renameFile(props.id);
+        break;
+      case "remove":
+        removeFolder(props.id);
+        break;
+      default:
+        console.log('unknown option');
+        break;
+    }
+  }
+
+  function displayMenu(e, id){
+    console.log('display menu:', e, 'for folder with id:', id)
+
+    // put whatever custom logic you need
+    // you can even decide to not display the Menu
+    show(e, { props: { id } });
+  }
+
+  const openFile = (fileId) => {
+    console.log('openFile not implemented yet')
+  }
+
+  const editFile = (fileId) => {
+    console.log('editFile not implemented yet')
+  }
+
+  const renameFile = (fileId) => {
+    console.log('renameFile not implemented yet')
+  }
+
   return (
     <React.Fragment>
+      <Menu id={CONTEXT_MENU_ID}>
+        <Item id="open" onClick={handleItemClick}>
+          Open
+        </Item>
+        <Item id="edit" onClick={handleItemClick}>
+          Edit
+        </Item>
+        <Item id="rename" onClick={handleItemClick}>
+          Rename
+        </Item>
+        <Separator />
+        <Item id="remove" onClick={handleItemClick}>
+          Remove
+        </Item>
+      </Menu>
+
       <Card className="filemanager-sidebar me-md-2">
         <CardBody>
           <div className="d-flex flex-column h-100">
@@ -29,12 +129,12 @@ const FileRightBar = () => {
                     <i className="mdi mdi-plus me-1"></i> Create New
                   </DropdownToggle>
                   <DropdownMenu>
-                    <Link className="dropdown-item" to="#">
+                    <DropdownItem className="dropdown-item" onClick={addFolder}>
                       <i className="bx bx-folder me-1"></i> Folder
-                    </Link>
-                    <Link className="dropdown-item" to="#">
+                    </DropdownItem>
+                    <DropdownItem className="dropdown-item" onClick={addFile}>
                       <i className="bx bx-file me-1"></i> File
-                    </Link>
+                    </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </div>
@@ -60,33 +160,26 @@ const FileRightBar = () => {
                     <Collapse isOpen={isOpen}>
                       <div className="card border-0 shadow-none ps-2 mb-0">
                         <ul className="list-unstyled mb-0">
-                          <li>
-                            <Link to="#" className="d-flex align-items-center">
-                              <span className="me-auto">Design</span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="#" className="d-flex align-items-center">
-                              <span className="me-auto">Development</span>{" "}
-                              <i className="mdi mdi-pin ms-auto"></i>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="#" className="d-flex align-items-center">
-                              <span className="me-auto">Project A</span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="#" className="d-flex align-items-center">
-                              <span className="me-auto">Admin</span>{" "}
-                              <i className="mdi mdi-pin ms-auto"></i>
-                            </Link>
-                          </li>
+                          {files.map(file => (
+                            <StyledFile key={file.id} onContextMenu={e => displayMenu(e, file.id)}>
+                              <Link to="#" className="d-flex align-items-center">
+                                <span className="me-auto">{file.name}</span>
+                                {file.isPinned && (
+                                  <>
+                                    {" "}
+                                    <i className="mdi mdi-pin ms-auto"></i>
+                                  </>
+                                )}
+                              </Link>
+                            </StyledFile>
+                          ))}
                         </ul>
                       </div>
                     </Collapse>
                   </div>
                 </li>
+
+                {/* Quick Links? */}
                 <li>
                   <Link to="#" className="text-body d-flex align-items-center">
                     <i className="mdi mdi-google-drive font-size-16 text-muted me-2"></i>{" "}
@@ -130,6 +223,7 @@ const FileRightBar = () => {
               </ul>
             </div>
 
+            {/* Upgrade Prompt Box */}
             <div className="mt-auto">
               <UncontrolledAlert color="success" className="px-3 mb-0 alert-dismissible">
                 <div className="mb-3">

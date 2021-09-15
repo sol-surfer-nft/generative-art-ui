@@ -11,7 +11,7 @@ const Pages500 = () => {
     <React.Fragment>
       <div className="account-pages my-5 pt-5">
         <MetaTags>
-          <title>500 Error Page | Skote - React Admin & Dashboard Template</title>
+          <title>500 Error Page | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container>
           <Row>

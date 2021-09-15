@@ -45,7 +45,7 @@ const CryptoBuySell = props => {
     <React.Fragment>
       <div className="page-content">
         <MetaTags>
-          <title>Buy/Sell | Skote - React Admin & Dashboard Template</title>
+          <title>Buy/Sell | Generative NFT Platform by SolSurfer</title>
         </MetaTags>
         <Container fluid>
           {/* Render Breadcrumb */}
