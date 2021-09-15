@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
-import { filesState } from '../../atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { foldersState, filesState } from '../../atoms'
 import {
   Card,
   CardBody,
@@ -37,11 +37,16 @@ const CONTEXT_MENU_ID = "menu-id";
 // file: id, name, file, Gb
 
 const FileList = () => {
-  const [myfiles, setMyFiles] = useRecoilState(filesState)
+  const [folders, setFolders] = useRecoilState(foldersState)
+  const files = useRecoilValue(filesState)
 
   const { show } = useContextMenu({
     id: CONTEXT_MENU_ID
   });
+
+  const [fileSearch, setFileSearch] = useState("")
+
+  const handleSearchChange = (e) => setFileSearch(e.target.value)
 
   const onFileCardClick = (fileId) => {
     console.log('clicked file card with id:', fileId)
@@ -50,7 +55,7 @@ const FileList = () => {
   }
 
   const removeFolder = folderId => {
-    setMyFiles(oldfiles => oldfiles.filter(file => file.id !== folderId))
+    setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId))
   }
 
   function handleItemClick({ event, props, triggerEvent, data }){
@@ -126,9 +131,11 @@ const FileList = () => {
               <div className="search-box mb-2 me-2">
                 <div className="position-relative">
                   <input
-                    type="text"
                     className="form-control bg-light border-light rounded"
+                    type="text"
                     placeholder="Search..."
+                    value={fileSearch}
+                    onChange={handleSearchChange}
                   />
                   <i className="bx bx-search-alt search-icon"></i>
                 </div>
@@ -162,12 +169,12 @@ const FileList = () => {
       {/* Files Grid */}
       <div>
         <Row>
-          {myfiles.map((myfile, key) => (
-            <Col xl={4} sm={6} key={key}>
+          {fileSearch && folders.filter(folder => folder.name.toLowerCase().includes(fileSearch.toLowerCase())).map(folder => (
+            <Col xl={4} sm={6} key={folder.id}>
               <StyledFileCard
                 className="shadow-none border"
                 onClick={onFileCardClick}
-                onContextMenu={(e) => displayMenu(e, myfile.id)}
+                onContextMenu={(e) => displayMenu(e, folder.id)}
               >
                 <CardBody className="p-3">
                   <div className="">
@@ -181,19 +188,19 @@ const FileList = () => {
                         </DropdownToggle>
 
                         <DropdownMenu>
-                          <Link className="dropdown-item" to="#">
+                          <DropdownItem className="dropdown-item" onClick={() => openFile(folder.id)}>
                             Open
-                          </Link>
-                          <Link className="dropdown-item" to="#">
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
                             Edit
-                          </Link>
-                          <Link className="dropdown-item" to="#">
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => renameFile(folder.id)}>
                             Rename
-                          </Link>
+                          </DropdownItem>
                           <div className="dropdown-divider"></div>
-                          <button className="dropdown-item" onClick={() => removeFolder(myfile.id)}>
+                          <DropdownItem className="dropdown-item" onClick={() => removeFolder(folder.id)}>
                             Remove
-                          </button>
+                          </DropdownItem>
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </div>
@@ -206,15 +213,196 @@ const FileList = () => {
                       <div className="overflow-hidden me-auto">
                         <h5 className="font-size-14 text-truncate mb-1 file-card-title">
                           <Link to="#" className="text-body">
-                            {myfile.name}
+                            {folder.name}
                           </Link>
                         </h5>
                         <p className="text-muted text-truncate mb-0">
-                          {myfile.file} Files
+                          {folder.files.length} Files
                         </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{myfile.Gb}GB</p>
+                        <p className="text-muted mb-0">{folder.files[0]?.gb || "2"}GB</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardBody>
+              </StyledFileCard>
+            </Col>
+          ))}
+
+          {/* Files Listing */}
+          {fileSearch && files.filter(file => file.name.toLowerCase().includes(fileSearch.toLowerCase())).map(file => (
+            <Col xl={4} sm={6} key={file.id}>
+              <StyledFileCard
+                className="shadow-none border"
+                onClick={onFileCardClick}
+                onContextMenu={(e) => displayMenu(e, file.id)}
+              >
+                <CardBody className="p-3">
+                  <div className="">
+                    <div className="float-end ms-2">
+                      <UncontrolledDropdown className="mb-2" direction="left">
+                        <DropdownToggle
+                          color="white"
+                          className="btn btn-link text-muted mt-n2"
+                        >
+                          <i className="mdi mdi-dots-horizontal"></i>
+                        </DropdownToggle>
+
+                        <DropdownMenu>
+                          <DropdownItem className="dropdown-item" onClick={() => openFile(file.id)}>
+                            Open
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => editFile(file.id)}>
+                            Edit
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => renameFile(file.id)}>
+                            Rename
+                          </DropdownItem>
+                          <div className="dropdown-divider"></div>
+                          <DropdownItem className="dropdown-item" onClick={() => removeFolder(file.id)}>
+                            Remove
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </div>
+                    <div className="avatar-xs me-3 mb-3">
+                      <div className="avatar-title bg-transparent rounded">
+                        <i className="bx bxs-spreadsheet font-size-24 text-info"></i>
+                      </div>
+                    </div>
+                    <div className="d-flex">
+                      <div className="overflow-hidden me-auto">
+                        <h5 className="font-size-14 text-truncate mb-1 file-card-title">
+                          <Link to="#" className="text-body">
+                            {file.name}
+                          </Link>
+                        </h5>
+                      </div>
+                      <div className="align-self-end ms-2">
+                        <p className="text-muted mb-0">{file.gb}GB</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardBody>
+              </StyledFileCard>
+            </Col>
+          ))}
+
+          {!fileSearch && folders.map(folder => (
+            <Col xl={4} sm={6} key={folder.id}>
+              <StyledFileCard
+                className="shadow-none border"
+                onClick={onFileCardClick}
+                onContextMenu={(e) => displayMenu(e, folder.id)}
+              >
+                <CardBody className="p-3">
+                  <div className="">
+                    <div className="float-end ms-2">
+                      <UncontrolledDropdown className="mb-2" direction="left">
+                        <DropdownToggle
+                          color="white"
+                          className="btn btn-link text-muted mt-n2"
+                        >
+                          <i className="mdi mdi-dots-horizontal"></i>
+                        </DropdownToggle>
+
+                        <DropdownMenu>
+                          <DropdownItem className="dropdown-item" onClick={() => openFile(folder.id)}>
+                            Open
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
+                            Edit
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => renameFile(folder.id)}>
+                            Rename
+                          </DropdownItem>
+                          <div className="dropdown-divider"></div>
+                          <DropdownItem className="dropdown-item" onClick={() => removeFolder(folder.id)}>
+                            Remove
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </div>
+                    <div className="avatar-xs me-3 mb-3">
+                      <div className="avatar-title bg-transparent rounded">
+                        <i className="bx bxs-folder font-size-24 text-warning"></i>
+                      </div>
+                    </div>
+                    <div className="d-flex">
+                      <div className="overflow-hidden me-auto">
+                        <h5 className="font-size-14 text-truncate mb-1 file-card-title">
+                          <Link to="#" className="text-body">
+                            {folder.name}
+                          </Link>
+                        </h5>
+                        <p className="text-muted text-truncate mb-0">
+                          {folder.files.length} Files
+                        </p>
+                      </div>
+                      <div className="align-self-end ms-2">
+                        <p className="text-muted mb-0">{folder.files[0]?.gb || "2"}GB</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardBody>
+              </StyledFileCard>
+            </Col>
+          ))}
+
+          {!fileSearch && files.map(file => (
+            <Col xl={4} sm={6} key={file.id}>
+              <StyledFileCard
+                className="shadow-none border"
+                onClick={onFileCardClick}
+                onContextMenu={(e) => displayMenu(e, file.id)}
+              >
+                <CardBody className="p-3">
+                  <div className="">
+                    <div className="float-end ms-2">
+                      <UncontrolledDropdown className="mb-2" direction="left">
+                        <DropdownToggle
+                          color="white"
+                          className="btn btn-link text-muted mt-n2"
+                        >
+                          <i className="mdi mdi-dots-horizontal"></i>
+                        </DropdownToggle>
+
+                        <DropdownMenu>
+                          <DropdownItem className="dropdown-item" onClick={() => openFile(file.id)}>
+                            Open
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => editFile(file.id)}>
+                            Edit
+                          </DropdownItem>
+                          <DropdownItem className="dropdown-item" onClick={() => renameFile(file.id)}>
+                            Rename
+                          </DropdownItem>
+                          <div className="dropdown-divider"></div>
+                          <DropdownItem className="dropdown-item" onClick={() => removeFolder(file.id)}>
+                            Remove
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </div>
+                    <div className="avatar-xs me-3 mb-3">
+                      <div className="avatar-title bg-transparent rounded">
+                        <i className="bx bxs-spreadsheet font-size-24 text-info"></i>
+                      </div>
+                    </div>
+                    <div className="d-flex">
+                      <div className="overflow-hidden me-auto">
+                        <h5 className="font-size-14 text-truncate mb-1 file-card-title">
+                          <Link to="#" className="text-body">
+                            {file.name}
+                          </Link>
+                        </h5>
+                        <p className="text-muted text-truncate mb-0">
+                          {file.file} Files
+                        </p>
+                      </div>
+                      <div className="align-self-end ms-2">
+                        <p className="text-muted mb-0">{file.Gb}GB</p>
                       </div>
                     </div>
                   </div>

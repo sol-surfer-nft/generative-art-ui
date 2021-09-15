@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types'
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 import { Switch, BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import { connect } from "react-redux"
+import { filesState } from './atoms'
+import { useRecoilState } from 'recoil'
 
 // Profile
 import UserProfile from "./pages/Authentication/user-profile"
@@ -49,6 +51,12 @@ fakeBackend()
 
 const App = props => {
   const [isAuth, setIsAuth] = useState(true);
+
+  const files = useRecoilState(filesState)
+
+  useEffect(() => {
+    console.log("files (ui):", files)
+  }, [files])
 
   const Layout = HorizontalLayout
 

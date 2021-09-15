@@ -4,6 +4,7 @@ import {
   Table,
   DropdownMenu,
   DropdownToggle,
+  DropdownItem,
   UncontrolledDropdown,
 } from "reactstrap"
 
@@ -53,19 +54,19 @@ const RecentFiles = props => {
                       </DropdownToggle>
 
                       <DropdownMenu className="dropdown-menu-end">
-                        <Link className="dropdown-item" to="#">
+                        <DropdownItem className="dropdown-item">
                           Open
-                        </Link>
-                        <Link className="dropdown-item" to="#">
+                        </DropdownItem>
+                        <DropdownItem className="dropdown-item">
                           Edit
-                        </Link>
-                        <Link className="dropdown-item" to="#">
+                        </DropdownItem>
+                        <DropdownItem className="dropdown-item">
                           Rename
-                        </Link>
+                        </DropdownItem>
                         <div className="dropdown-divider"></div>
-                        <Link className="dropdown-item" to="#">
+                        <DropdownItem className="dropdown-item">
                           Remove
-                        </Link>
+                        </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </td>

@@ -1,5 +1,5 @@
-import { atom } from 'recoil'
-import filesData from './common/data/files'
+import { atom, selector } from 'recoil'
+import { nanoid } from 'nanoid'
 
 const initialState = {
 
@@ -10,7 +10,139 @@ export const globalState = atom({
   default: initialState
 })
 
-export const filesState = atom({
+export const filesState = selector({
   key: "files",
-  default: filesData
+  get: ({get}) => {
+    const folders = get(foldersState)
+
+    const foldersReducer = (previousValue, currentValue) => {
+      // if previous is []
+      if(!currentValue.files) return previousValue;
+      return [...previousValue, ...currentValue.files.map(file => ({...file, folderId: currentValue.id, folderName: currentValue.name }))] 
+    }
+
+    const derivedFiles = folders.reduce(foldersReducer, []);
+
+    console.log('derived files:', derivedFiles)
+
+    return derivedFiles
+  }
+})
+
+export const foldersState = atom({
+  key: "folders",
+  default: [
+    {
+      id: nanoid(),
+      name: "folder 1",
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 1 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 4
+        }
+      ]
+    },
+    {
+      id: nanoid(),
+      name: "Design",
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 7 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 3
+        }
+      ]
+    },
+    {
+      id: nanoid(),
+      name: "Development",
+      isPinned: true,
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 1 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 2
+        }
+      ]
+    },
+    {
+      id: nanoid(),
+      name: "Admin",
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 3 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 2
+        },
+        {
+          id: nanoid(),
+          name: "file-3",
+          gb: 8
+        }
+      ]
+    },
+    {
+      id: nanoid(),
+      name: "Project A",
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 3 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 2
+        },
+        {
+          id: nanoid(),
+          name: "file-3",
+          gb: 1
+        }
+      ]
+    },
+    {
+      id: nanoid(),
+      name: "Applications",
+      files: [
+        {
+          id: nanoid(),
+          name: "file-1",
+          gb: 2 // size
+        },
+        {
+          id: nanoid(),
+          name: "file-2",
+          gb: 5
+        },
+        {
+          id: nanoid(),
+          name: "file-3",
+          gb: 1
+        }
+      ]
+    },
+  ]
 })

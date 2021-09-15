@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { useRecoilState } from 'recoil'
-import { filesState } from '../../atoms'
+import { foldersState, filesState } from '../../atoms'
 import styled from 'styled-components'
 import {
   Card,
@@ -29,11 +29,15 @@ const StyledFile = styled.li`
     text-decoration: underline;
   }
 `
+const StyledFolder = styled.li`
+  cursor: pointer;
+`
 
 // file: id, name, file, Gb
 const FileRightBar = () => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [openFolders, setOpenFolders] = useState([])
 
+  const [folders, setFolders] = useRecoilState(foldersState)
   const [files, setFiles] = useRecoilState(filesState)
 
   const { show } = useContextMenu({
@@ -42,13 +46,12 @@ const FileRightBar = () => {
 
   const toggle = () => setIsOpen(!isOpen)
 
-  const addFolder = () => setFiles([
-    ...files,
+  const addFolder = () => setFolders([
+    ...folders,
     {
       id: nanoid(),
       name: "Untitled",
-      Gb: 0,
-      file: "23"
+      files: []
     }
   ])
 
@@ -98,6 +101,18 @@ const FileRightBar = () => {
     console.log('renameFile not implemented yet')
   }
 
+  const handleFolderClick = folderId => {
+    console.log('clicked folder with id:', folderId)
+    if(openFolders.includes(folderId)) {
+      // remove id from folders
+      setOpenFolders(prevFolders => prevFolders.filter(id => id !== folderId))
+    }
+    else {
+      // add id to folders
+      setOpenFolders(prevFolders => [...prevFolders, folderId])
+    }
+  }
+
   return (
     <React.Fragment>
       <Menu id={CONTEXT_MENU_ID}>
@@ -139,7 +154,7 @@ const FileRightBar = () => {
                 </UncontrolledDropdown>
               </div>
               <ul className="list-unstyled categories-list">
-                <li>
+                {/* <li>
                   <div className="custom-accordion">
                     <Link
                       className="text-body fw-medium py-1 d-flex align-items-center"
@@ -148,16 +163,15 @@ const FileRightBar = () => {
                     >
                       <i className="mdi mdi-folder font-size-16 text-warning me-2"></i>{" "}
                       Files{" "}
-                      {/* <i className="mdi mdi-chevron-up accor-down-icon ms-auto"></i> */}
                       <i
                         className={
-                          isOpen
+                          openFolders.includes(folder.id)
                             ? "mdi mdi-chevron-up accor-down-icon ms-auto"
                             : "mdi mdi-chevron-down accor-down-icon ms-auto"
                         }
                       />
                     </Link>
-                    <Collapse isOpen={isOpen}>
+                    <Collapse isOpen={openFolders.includes(folder.id)}>
                       <div className="card border-0 shadow-none ps-2 mb-0">
                         <ul className="list-unstyled mb-0">
                           {files.map(file => (
@@ -177,49 +191,49 @@ const FileRightBar = () => {
                       </div>
                     </Collapse>
                   </div>
-                </li>
+                </li> */}
 
                 {/* Quick Links? */}
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-google-drive font-size-16 text-muted me-2"></i>{" "}
-                    <span className="me-auto">Google Drive</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-dropbox font-size-16 me-2 text-primary"></i>{" "}
-                    <span className="me-auto">Dropbox</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-share-variant font-size-16 me-2"></i>{" "}
-                    <span className="me-auto">Shared</span>{" "}
-                    <i className="mdi mdi-circle-medium text-danger ms-2"></i>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-star-outline text-muted font-size-16 me-2"></i>{" "}
-                    <span className="me-auto">Starred</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-trash-can text-danger font-size-16 me-2"></i>{" "}
-                    <span className="me-auto">Trash</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-body d-flex align-items-center">
-                    <i className="mdi mdi-cog text-muted font-size-16 me-2"></i>{" "}
-                    <span className="me-auto">Setting</span>
-                    <span className="badge bg-success rounded-pill ms-2">
-                      01
-                    </span>
-                  </Link>
-                </li>
+
+                {folders.map(folder => (
+                  <StyledFolder key={folder.id} onClick={() => handleFolderClick(folder.id)}>
+                    <div className="text-body d-flex align-items-center">
+                      <i className="mdi mdi-folder font-size-16 text-warning me-2"></i>{" "}
+                      <span className="me-auto">{folder.name}</span>
+                      <i
+                        className={
+                          openFolders.includes(folder.id)
+                            ? "mdi mdi-chevron-up accor-down-icon ms-auto"
+                            : "mdi mdi-chevron-down accor-down-icon ms-auto"
+                        }
+                      />
+                    </div>
+                    <Collapse isOpen={openFolders.includes(folder.id)}>
+                      <div className="card border-0 shadow-none ps-2 mb-0">
+                        <ul className="list-unstyled mb-0">
+                          {folder.files.map(file => (
+                            <StyledFile key={file.id} onContextMenu={e => displayMenu(e, file.id)}>
+                              <Link to="#" className="d-flex align-items-center">
+                                <span className="me-auto">{file.name}</span>
+                                {file.isPinned && (
+                                  <>
+                                    {" "}
+                                    <i className="mdi mdi-pin ms-auto"></i>
+                                  </>
+                                )}
+                              </Link>
+                            </StyledFile>
+                          ))}
+                          {/* {folder.files.length === 0 && (
+                            <div>
+                              <span>Create File</span>
+                            </div>
+                          )} */}
+                        </ul>
+                      </div>
+                    </Collapse>
+                  </StyledFolder>
+                ))}
               </ul>
             </div>
 
@@ -252,3 +266,38 @@ const FileRightBar = () => {
 }
 
 export default FileRightBar
+
+{/* <li>
+  <Link to="#" className="text-body d-flex align-items-center">
+    <i className="mdi mdi-dropbox font-size-16 me-2 text-primary"></i>{" "}
+    <span className="me-auto">Dropbox</span>
+  </Link>
+</li>
+<li>
+  <Link to="#" className="text-body d-flex align-items-center">
+    <i className="mdi mdi-share-variant font-size-16 me-2"></i>{" "}
+    <span className="me-auto">Shared</span>{" "}
+    <i className="mdi mdi-circle-medium text-danger ms-2"></i>
+  </Link>
+</li>
+<li>
+  <Link to="#" className="text-body d-flex align-items-center">
+    <i className="mdi mdi-star-outline text-muted font-size-16 me-2"></i>{" "}
+    <span className="me-auto">Starred</span>
+  </Link>
+</li>
+<li>
+  <Link to="#" className="text-body d-flex align-items-center">
+    <i className="mdi mdi-trash-can text-danger font-size-16 me-2"></i>{" "}
+    <span className="me-auto">Trash</span>
+  </Link>
+</li>
+<li>
+  <Link to="#" className="text-body d-flex align-items-center">
+    <i className="mdi mdi-cog text-muted font-size-16 me-2"></i>{" "}
+    <span className="me-auto">Settings</span>
+    <span className="badge bg-success rounded-pill ms-2">
+      01
+    </span>
+  </Link>
+</li> */}
