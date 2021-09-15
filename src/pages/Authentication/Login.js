@@ -15,7 +15,6 @@ import { AvForm, AvField } from "availity-reactstrap-validation"
 //Social Media Imports
 import { GoogleLogin } from "react-google-login"
 // import TwitterLogin from "react-twitter-auth"
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props"
 
 // actions
 import { loginUser, apiError, socialLogin } from "../../store/actions"
@@ -25,7 +24,7 @@ import profile from "assets/images/profile-img.png"
 import logo from "assets/images/logo.svg"
 
 //Import config
-import { facebook, google } from "../../config"
+import { google } from "../../config"
 
 const Login = props => {
   const dispatch = useDispatch()
@@ -59,18 +58,8 @@ const Login = props => {
     }
   }
 
-  //handleGoogleLoginResponse
-  const googleResponse = response => {
-    signIn(response, "google")
-  }
-
   //handleTwitterLoginResponse
   // const twitterResponse = e => {}
-
-  //handleFacebookLoginResponse
-  const facebookResponse = response => {
-    signIn(response, "facebook")
-  }
 
   return (
     <React.Fragment>
@@ -174,22 +163,6 @@ const Login = props => {
                         <h5 className="font-size-14 mb-3">Sign in with</h5>
 
                         <ul className="list-inline">
-                          <li className="list-inline-item">
-                            <FacebookLogin
-                              appId={facebook.APP_ID}
-                              autoLoad={false}
-                              callback={facebookResponse}
-                              render={renderProps => (
-                                <Link
-                                  to="#"
-                                  className="social-list-item bg-primary text-white border-primary"
-                                  onClick={renderProps.onClick}
-                                >
-                                  <i className="mdi mdi-facebook" />
-                                </Link>
-                              )}
-                            />
-                          </li>
                           {/*<li className="list-inline-item">*/}
                           {/*  <TwitterLogin*/}
                           {/*    loginUrl={*/}

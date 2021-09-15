@@ -65,7 +65,7 @@ const App = props => {
             {/* Auth Protected Routes */}
             {isAuth && (
               <>
-                <Route exact path="/dashboard" component={Dashboard} />
+                <Route exact path={["/", "/dashboard"]} component={Dashboard} />
                 <Route exact path="/profile" component={UserProfile} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>

@@ -19,8 +19,8 @@ import {
 import classnames from "classnames";
 import { isEmpty } from "lodash";
 
-//Import Star Ratings
-import StarRatings from "react-star-ratings";
+// Import Star Ratings
+// import StarRatings from "react-star-ratings";
 
 //Import Product Images
 import { productImages } from "assets/images/product";
@@ -290,7 +290,7 @@ const EcommerceProductDetail = props => {
                           <h4 className="mt-1 mb-3">{product.name}</h4>
 
                           <div className="text-muted float-start me-3">
-                            <StarRatings
+                            {/* <StarRatings
                               rating={4}
                               starRatedColor="#F1B44C"
                               starEmptyColor="#2D363F"
@@ -298,7 +298,8 @@ const EcommerceProductDetail = props => {
                               name="rating"
                               starDimension="14px"
                               starSpacing="3px"
-                            />
+                            /> */}
+                            <span>no stars no more</span>
                           </div>
                           <p className="text-muted mb-4">
                             ( {product.reviews} Customers Review )

@@ -23,11 +23,11 @@ import classnames from "classnames"
 import { isEmpty, map } from "lodash"
 
 //Import Star Ratings
-import StarRatings from "react-star-ratings"
+// import StarRatings from "react-star-ratings"
 
 // RangeSlider
-import Nouislider from "nouislider-react"
-import "nouislider/distribute/nouislider.css"
+// import Nouislider from "nouislider-react"
+// import "nouislider/distribute/nouislider.css"
 
 //Import Product Images
 import { productImages } from "assets/images/product"
@@ -202,13 +202,14 @@ const EcommerceProducts = props => {
                     <h5 className="font-size-14 mb-4">Price</h5>
                     <br />
 
-                    <Nouislider
+                    {/* <Nouislider
                       range={{ min: 0, max: 600 }}
                       tooltips={true}
                       start={[100, 500]}
                       connect
                       onSlide={onUpdate}
-                    />
+                    /> */}
+                    <span>no slider no more</span>
                   </div>
 
                   <div className="mt-4 pt-3">
@@ -403,7 +404,7 @@ const EcommerceProducts = props => {
                               </Link>
                             </h5>
                             <div className="text-muted mb-3">
-                              <StarRatings
+                              {/* <StarRatings
                                 rating={product.rating}
                                 starRatedColor="#F1B44C"
                                 starEmptyColor="#2D363F"
@@ -411,7 +412,8 @@ const EcommerceProducts = props => {
                                 name="rating"
                                 starDimension="14px"
                                 starSpacing="3px"
-                              />
+                              /> */}
+                              <span>no stars no more</span>
                             </div>
                             <h5 className="my-0">
                               <span className="text-muted me-2">

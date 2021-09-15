@@ -679,31 +679,6 @@ const Navbar = props => {
                         </Link>
                       </div>
                     </div>
-                    <div className="dropdown">
-                      <Link
-                        to="/#"
-                        className="dropdown-item dropdown-toggle arrow-none"
-                        onClick={e => {
-                          e.preventDefault()
-                          setmap(!map)
-                        }}
-                      >
-                        {props.t("Maps")} <div className="arrow-down"></div>
-                      </Link>
-                      <div
-                        className={classname("dropdown-menu", { show: map })}
-                      >
-                        <Link to="#" className="dropdown-item">
-                          {props.t("Google Maps")}{" "}
-                        </Link>
-                        <Link to="#" className="dropdown-item">
-                          {props.t("Vector Maps")}{" "}
-                        </Link>
-                        <Link to="#" className="dropdown-item">
-                          {props.t("Leaflet Maps")}{" "}
-                        </Link>
-                      </div>
-                    </div>
                   </div>
                 </li>
 

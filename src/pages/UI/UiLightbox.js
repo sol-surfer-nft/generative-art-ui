@@ -20,8 +20,6 @@ import { Link } from "react-router-dom"
 //Lightbox
 import Lightbox from "react-image-lightbox"
 import "react-image-lightbox/style.css"
-import ModalVideo from "react-modal-video"
-import "react-modal-video/scss/modal-video.scss"
 
 // import image
 import img1 from "../../assets/images/small/img-1.jpg"
@@ -307,22 +305,6 @@ const UiLightbox = () => {
                       >
                         Open Vimeo Video
                       </Button>{" "}
-                      <ModalVideo
-                        videoId="L61p2uyiMSo"
-                        channel="youtube"
-                        isOpen={isOpen}
-                        onClose={() => {
-                          setisOpen(!isOpen)
-                        }}
-                      />
-                      <ModalVideo
-                        videoId="L61p2uyiMSo"
-                        channel="youtube"
-                        isOpen={isOpen1}
-                        onClose={() => {
-                          setisOpen1(false)
-                        }}
-                      />
                     </Col>
                   </Row>
                 </CardBody>

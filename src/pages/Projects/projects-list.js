@@ -3,7 +3,7 @@ import MetaTags from "react-meta-tags";
 import { Link, withRouter } from "react-router-dom";
 import { map } from "lodash";
 import { isEmpty } from "lodash";
-import * as moment from "moment";
+// import * as moment from "moment";
 import {
   Badge,
   Col,
@@ -124,7 +124,7 @@ const ProjectsList = props => {
   }, [projects]);
 
   const handleValidDate = date => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
+    // const date1 = moment(new Date(date)).format("DD MMM Y");
     return date1;
   };
 
