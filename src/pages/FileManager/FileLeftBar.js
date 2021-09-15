@@ -138,7 +138,7 @@ const FileRightBar = () => {
 
                 <div>
                   <h5 className="text-success">Upgrade Features</h5>
-                  <p>Cum sociis natoque penatibus et</p>
+                  <p>Choose our premium plan to unlock more features!</p>
                   <div className="text-center">
                     <button
                       type="button"

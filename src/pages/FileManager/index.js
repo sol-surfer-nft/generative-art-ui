@@ -59,30 +59,22 @@ const Index = () => {
   }
   return (
     <React.Fragment>
-      <div className="page-content">
-          <MetaTags>
-            <title>File Manager | Skote - React Admin & Dashboard Template</title>
-          </MetaTags>
-        <Container fluid>
-          <Breadcrumbs title="Apps" breadcrumbItem="File Manager" />
-          <div className="d-xl-flex">
+      <Breadcrumbs title="Apps" breadcrumbItem="NFT Tool" breadcrumbTitle="NFT Tool (demo)" />
+      <div className="d-xl-flex">
+        <div className="w-100">
+          <div className="d-md-flex">
+            <FileLeftBar />
             <div className="w-100">
-              <div className="d-md-flex">
-                {/* FileRightBar  */}
-                <FileLeftBar />
-                <div className="w-100">
-                  <Card>
-                    <CardBody>
-                      <FileList />
-                      <RecentFile />
-                    </CardBody>
-                  </Card>
-                </div>
-              </div>
+              <Card>
+                <CardBody>
+                  <FileList />
+                  <RecentFile />
+                </CardBody>
+              </Card>
             </div>
-            <Storage options={options} series={series} />
           </div>
-        </Container>
+        </div>
+        <Storage options={options} series={series} />
       </div>
     </React.Fragment>
   )

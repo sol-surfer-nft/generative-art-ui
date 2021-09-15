@@ -221,7 +221,8 @@ const Navbar = props => {
                     {props.t("Pages")} <div className="arrow-down"></div>
                   </Link>
                   <div className={classname("dropdown-menu", { show: app })}>
-                    <Link to="#" className="dropdown-item">
+                    <Link to="#" className="dropdown-item">None Yet</Link>
+                    {/* <Link to="#" className="dropdown-item">
                       {props.t("Calendar")}
                     </Link>
                     <Link to="#" className="dropdown-item">
@@ -287,8 +288,8 @@ const Navbar = props => {
                             </Link>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      </div> */}
+                    {/* </div> */}
                     {/* <div className="dropdown">
                       <Link
                         to="/#"
