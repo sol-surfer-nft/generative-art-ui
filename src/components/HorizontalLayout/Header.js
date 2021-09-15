@@ -23,6 +23,7 @@ import logo from "../../assets/images/logo.svg"
 import logoLight from "../../assets/images/logo-light.png"
 import logoLightSvg from "../../assets/images/logo-light.svg"
 import logoDark from "../../assets/images/logo-dark.png"
+import SolSurferLogo from '../../assets/images/logo.png'
 
 // import images
 import github from "../../assets/images/brands/github.png"
@@ -83,22 +84,24 @@ const Header = props => {
         <div className="navbar-header">
           <div className="d-flex">
             <div className="navbar-brand-box">
-              <Link to="/" className="logo logo-dark">
+              {/* <Link to="/" className="logo logo-dark">
                 <span className="logo-sm">
                   <img src={logo} alt="" height="22" />
                 </span>
                 <span className="logo-lg">
                   <img src={logoDark} alt="" height="17" />
                 </span>
-              </Link>
+              </Link> */}
 
               <Link to="/" className="logo logo-light">
-                <span className="logo-sm">
-                  <img src={logoLightSvg} alt="" height="22" />
-                </span>
-                <span className="logo-lg">
-                  <img src={logoLight} alt="" height="19" />
-                </span>
+                <div className="" style={{display: 'flex', alignItems:'center'}}>
+                  <img src={SolSurferLogo} alt="" height="22" />
+                  <span style={{color: "#fff", marginLeft: 6, fontSize: 19}}>SolSurfer</span>
+                </div>
+                {/* <span className="logo-lg">
+                  <img src={SolSurferLogo} alt="" height="19" />
+                  <span style={{color: "#fff", marginLeft: 6, fontSize: 19}}>SolSurfer</span>
+                </span> */}
               </Link>
             </div>
 
