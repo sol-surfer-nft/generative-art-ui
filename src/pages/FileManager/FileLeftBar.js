@@ -22,7 +22,7 @@ import {
   useContextMenu
 } from "react-contexify";
 import classNames from "classnames"
-import ClickAwayListener from 'react-click-away-listener';
+// import ClickAwayListener from 'react-click-away-listener';
 
 const FILE_MENU_ID = "file-menu-id";
 const FOLDER_MENU_ID = "folder-menu-id";
@@ -82,13 +82,15 @@ const StyledUploadButton = styled.div`
 const MAX_FILES = 50
 
 // file: id, name, file, Gb
-const FileRightBar = () => {
+const FileRightBar = ({
+  modal,
+  toggleModal
+}) => {
   const [openFolders, setOpenFolders] = useState([])
 
   const [folders, setFolders] = useRecoilState(foldersState)
   const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
   const [files, setFiles] = useRecoilState(filesState)
-  const [modal, setModal] = useRecoilState(modalState)
 
   const [selectedSidebarItem, setSelectedSidebarItem] = useState("")
 
@@ -197,8 +199,8 @@ const FileRightBar = () => {
   }
 
   const renameFolder = folderId => {
-    console.log('rename folder not implemented yet')
-    setModal(true)
+    console.log('rename folder not implemented yet. folder id:', folderId)
+    toggleModal("rename-folder")
   }
 
   function handleFileItemClick({ event, props, triggerEvent, data }){
@@ -243,7 +245,7 @@ const FileRightBar = () => {
   }
 
   function displayMenu(e, id, MENU_ID = FILE_MENU_ID, root=false){
-    console.log('display menu:', e, 'for folder with id:', id)
+    // console.log('display menu:', e, 'for folder with id:', id)
 
     // put whatever custom logic you need
     // you can even decide to not display the Menu
@@ -260,6 +262,7 @@ const FileRightBar = () => {
 
   const renameFile = fileId => {
     console.log('renaming file')
+    toggleModal("rename-file")
   }
 
   const removeFile = (fileId, root = false) => {
@@ -419,8 +422,8 @@ const FileRightBar = () => {
               <ul className="list-unstyled categories-list">
 
                 {folders.map(folder => (
-                  <ClickAwayListener onClickAway={() => onClickAwayFolder(folder.id)} key={folder.id}>
-                    <StyledFolder>
+                  // <ClickAwayListener onClickAway={() => onClickAwayFolder(folder.id)} key={folder.id}>
+                    <StyledFolder key={folder.id}>
                       <div className={classNames("text-body d-flex align-items-center file-card-item", { "sidebar-item-active": selectedSidebarItem === folder.id } )}
                         onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
                         onClick={() => handleFolderClick(folder.id)}
@@ -459,7 +462,7 @@ const FileRightBar = () => {
                         </div>
                       </Collapse>
                     </StyledFolder>
-                  </ClickAwayListener>
+                  // </ClickAwayListener>
                 ))}
                 <div style={{height: 4}}></div>
                 {rootFiles.map(file => (

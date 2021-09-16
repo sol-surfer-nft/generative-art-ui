@@ -14,7 +14,6 @@ import {
   Form,
   Row,
   UncontrolledDropdown,
-  Modal,
 } from "reactstrap"
 import { useContextMenu } from "react-contexify";
 import classNames from "classnames"
@@ -51,23 +50,21 @@ const StyledFileCard = styled(Card)`
 const FOLDER_MENU_ID = "folder-menu-id"
 const FILE_MENU_ID = "file-menu-id"
 
-const FileList = () => {
+const FileList = ({
+  modal,
+  toggleModal
+}) => {
   const [folders, setFolders] = useRecoilState(foldersState)
   const files = useRecoilValue(filesState)
   
   const { show } = useContextMenu();
 
-  const [modal, setModal] = useState(false)
   const [fileSearch, setFileSearch] = useState("")
   const [selectedItem, setSelectedItem] = useState("") // id of file or folder selected
 
   useEffect(() => {
 
-    return () => {
-      if(setSelectedItem) setSelectedItem("")
-      if(setFileSearch) setFileSearch("")
-      if(setModal) setModal(false)
-    }
+    return () => reset()
   }, [])
 
   const handleSearchChange = (e) => setFileSearch(e.target.value)
@@ -92,7 +89,7 @@ const FileList = () => {
   }
 
   function displayMenu(e, id, MENU_ID = FILE_MENU_ID){
-    console.log('display menu:', e, 'for folder with id:', id)
+    // console.log('display menu:', e, 'for folder with id:', id)
     // put whatever custom logic you need
     // you can even decide to not display the Menu
     show(e, { id: MENU_ID, props: { id } });
@@ -108,12 +105,12 @@ const FileList = () => {
 
   const renameFile = (fileId) => {
     console.log('renameFile not implemented yet')
+    toggleModal("rename-file")
   }
 
-  const toggleModal = () => {
-    setModal(prev => !prev)
-    // remove body css
-    document.body.classList.add("no_padding");
+  const reset = () => {
+    setSelectedItem("")
+    setFileSearch("")
   }
 
   return (
@@ -167,49 +164,6 @@ const FileList = () => {
           </Col>
         </Row>
       </div>
-
-      {/* Centered Modal with Backdrop */}
-      <Modal
-        isOpen={modal}
-        toggle={() => {
-          toggleModal();
-        }}
-        centered={true}
-      >
-        <div className="modal-header">
-          <h5 className="modal-title mt-0">Center Modal</h5>
-          <button
-            type="button"
-            onClick={() => {
-              setModal(false);
-            }}
-            className="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div className="modal-body">
-          <p>
-            Cras mattis consectetur purus sit amet fermentum.
-            Cras justo odio, dapibus ac facilisis in, egestas
-            eget quam. Morbi leo risus, porta ac consectetur
-            ac, vestibulum at eros.
-          </p>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque
-            nisl consectetur et. Vivamus sagittis lacus vel
-            augue laoreet rutrum faucibus dolor auctor.
-          </p>
-          <p className="mb-0">
-            Aenean lacinia bibendum nulla sed consectetur.
-            Praesent commodo cursus magna, vel scelerisque
-            nisl consectetur et. Donec sed odio dui. Donec
-            ullamcorper nulla non metus auctor fringilla.
-          </p>
-        </div>
-      </Modal>
 
       {/* Files Grid */}
       <div>

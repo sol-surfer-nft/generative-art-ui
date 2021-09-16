@@ -1,17 +1,75 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Card, CardBody } from "reactstrap"
+import { useRecoilState } from 'recoil'
+import { foldersState, rootFilesState } from '../../atoms'
+import { nanoid } from 'nanoid'
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
-// import Component
+// import Components
 import FileLeftBar from "./FileLeftBar"
 import FileList from "./FileList"
 import RecentFiles from "./RecentFiles"
 import Storage from "./Storage"
 
+import { AddFileModal, AddFolderModal, RenameFileModal, RenameFolderModal } from './modals'
+
+const series = [76]
+
 const FileManager = () => {
-  const series = [76]
+  const [folders, setFolders] = useRecoilState(foldersState)
+  const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
+
+  const [modal, setModal] = useState(false)
+  const [modalType, setModalType] = useState("add-file") // "add-file", "add-folder", "rename-file", "rename-folder"
+
+  const toggleModal = (fileType = "add-file") => {
+    console.log('toggling modal')
+    setModal(prev => !prev)
+    if(modalType !== fileType) setModalType(fileType)
+  }
+
+  const closeModal = () => {
+    setModal(false)
+    setModalType("add-file")
+  }
+
+  const onFileModalSubmit = async (filename) => {
+    return new Promise((resolve, reject) => {
+      // Mock response. Can try/catch here too
+      setTimeout(() => {
+        // Add file with filename to project, then resolve successful to close the modal
+        if(!filename) return reject("Error: File name not found")
+
+        setRootFiles(prevRootFiles => ([...prevRootFiles, {
+          id: nanoid(),
+          name: filename,
+          gb: Math.floor(Math.random() * 5) + 1
+        }]))
+
+        resolve("success!")
+      }, 1000)
+    })
+  }
+
+  const onFolderModalSubmit = async (foldername) => {
+    return new Promise((resolve, reject) => {
+      // Mock response. Can try/catch here too
+      setTimeout(() => {
+        // Add file with filename to project, then resolve successful to close the modal
+        if(!foldername) return reject("Error: Folder name not found")
+
+        setFolders(prevFolders => ([...prevFolders, {
+          id: nanoid(),
+          name: foldername,
+          files: [],
+        }]))
+
+        resolve("success!")
+      }, 1000)
+    })
+  }
   
   return (
     <React.Fragment>
@@ -19,12 +77,37 @@ const FileManager = () => {
       <div className="d-xl-flex">
         <div className="w-100">
           <div className="d-md-flex">
-            <FileLeftBar />
+            <FileLeftBar modal={modal} toggleModal={toggleModal} />
             <div className="w-100">
               <Card>
                 <CardBody>
-                  <FileList />
+                  <FileList modal={modal} toggleModal={toggleModal} />
                   <RecentFiles />
+
+                  <AddFileModal
+                    isOpen={modal && modalType === "add-file"}
+                    toggleModal={toggleModal}
+                    closeModal={closeModal}
+                    onSubmit={onFileModalSubmit}
+                  />
+                  <AddFolderModal
+                    isOpen={modal && modalType === "add-folder"}
+                    toggleModal={toggleModal}
+                    closeModal={closeModal}
+                    onSubmit={onFolderModalSubmit}
+                  />
+                  <RenameFileModal
+                    isOpen={modal && modalType === "rename-file"}
+                    toggleModal={toggleModal}
+                    closeModal={closeModal}
+                    onSubmit={onFileModalSubmit}
+                  />
+                  <RenameFolderModal
+                    isOpen={modal && modalType === "rename-folder"}
+                    toggleModal={toggleModal}
+                    closeModal={closeModal}
+                    onSubmit={onFolderModalSubmit}
+                  />
                 </CardBody>
               </Card>
             </div>
