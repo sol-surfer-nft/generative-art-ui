@@ -38,6 +38,7 @@
     "react-bootstrap-sweetalert": "^5.2.0",
     "react-bootstrap-table-next": "^4.0.3",
     "react-bootstrap-table2-editor": "^1.4.0",
+    "react-click-away-listener": "^2.0.5",
     "react-color": "^2.19.3",
     "react-contexify": "^5.0.0",
     "react-countdown": "^2.3.2",

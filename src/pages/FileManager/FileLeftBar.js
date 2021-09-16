@@ -22,6 +22,7 @@ import {
   useContextMenu
 } from "react-contexify";
 import classNames from "classnames"
+import ClickAwayListener from 'react-click-away-listener';
 
 const FILE_MENU_ID = "file-menu-id";
 const FOLDER_MENU_ID = "folder-menu-id";
@@ -161,6 +162,13 @@ const FileRightBar = () => {
             }
           }
         }
+      }
+      else {
+        // Add file to root level anyways
+        setRootFiles(prevRootFiles => [
+          ...prevRootFiles,
+          newFile
+        ])
       }
     }
     else {
@@ -315,6 +323,10 @@ const FileRightBar = () => {
     }
   }
 
+  const onClickAwayFolder = (folderId) => {
+    console.log('clicked away from folder:', folderId)
+  }
+
   // To Do: Display modal to add new file
   // Add settings item back in to left sidebar
   // Subrouter for files state in center piece?
@@ -363,13 +375,12 @@ const FileRightBar = () => {
                 {/* <Input
                   type="file" className="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"
                 /> */}
-                <StyledUploadButton
-                  className="btn btn-light file-upload-button"
+                {/* <StyledUploadButton
+                  className="file-upload-button"
                 >
-                  {/* Enables folder upload as well */}
                   <input type="file" onChange={onFileChange} className="file-upload-input" webkitdirectory="" mozdirectory="" directory="" />
                   <i className="mdi mdi-upload me-1"></i>{" "}
-                </StyledUploadButton>
+                </StyledUploadButton> */}
 
                 {/* Create New Button */}
                 <UncontrolledDropdown style={{flex:1, marginLeft: 6}}>
@@ -380,7 +391,7 @@ const FileRightBar = () => {
                     <i className="mdi mdi-plus me-1"></i> Create New
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem className="dropdown-item" onClick={addFolder}>
+                    <DropdownItem className="dropdown-item" onClick={() => addFolder()}>
                       <i className="bx bx-folder me-1"></i> Folder
                     </DropdownItem>
                     <DropdownItem className="dropdown-item" onClick={() => addFile()}>
@@ -389,61 +400,66 @@ const FileRightBar = () => {
                     <DropdownItem divider />
                     <DropdownItem className="dropdown-item">
                       <StyledUploadButton className="file-upload-button">
-                        <input type="file" onChange={onFileChange} className="file-upload-input" />
+                        <input type="file" onChange={onFileChange} className="file-upload-input" multiple />
                         <i className="mdi mdi-upload me-1"></i>{" "}File Upload
                       </StyledUploadButton>
                     </DropdownItem>
                     <DropdownItem className="dropdown-item">
                       <StyledUploadButton className="file-upload-button">
-                        <input type="file" onChange={onFileChange} className="file-upload-input" webkitdirectory="true" mozdirectory="true" directory="true" />
+                        <input type="file" onChange={onFileChange} className="file-upload-input" directory="" webkitdirectory="" mozdirectory="" />
                         <i className="mdi mdi-upload me-1"></i>{" "}Folder Upload
                       </StyledUploadButton>
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </div>
+
+
+              {/* Sidebar Folders / Files List */}
               <ul className="list-unstyled categories-list">
 
                 {folders.map(folder => (
-                  <StyledFolder key={folder.id}>
-                    <div className={classNames("text-body d-flex align-items-center file-card-item", { "sidebar-item-active": selectedSidebarItem === folder.id } )}
-                      onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
-                      onClick={() => handleFolderClick(folder.id)}
-                    >
-                      <i className="mdi mdi-folder font-size-16 text-warning me-2"></i>{" "}
-                      <span className="me-auto">{folder.name}</span>
-                      <i
-                        className={
-                          openFolders.includes(folder.id)
-                            ? "mdi mdi-chevron-up accor-down-icon ms-auto"
-                            : "mdi mdi-chevron-down accor-down-icon ms-auto"
-                        }
-                      />
-                    </div>
-                    <Collapse isOpen={openFolders.includes(folder.id)}>
-                      <div className="card border-0 shadow-none ps-2 mb-0">
-                        <ul className="list-unstyled mb-0">
-                          {folder.files.map(file => (
-                            <StyledFile key={file.id}
-                              className={classNames({ "sidebar-item-active": selectedSidebarItem === file.id } )}
-                              onContextMenu={e => displayMenu(e, file.id, FILE_MENU_ID)}
-                              onClick={() => handleFileClick(file.id)}
-                            >
-                              <Link to="#" className="d-flex align-items-center">
-                                <span className="me-auto">{file.name}</span>
-                                {file.isPinned && (
-                                  <>
-                                    {" "}
-                                    <i className="mdi mdi-pin ms-auto"></i>
-                                  </>
-                                )}
-                              </Link>
-                            </StyledFile>
-                          ))}
-                        </ul>
+                  <ClickAwayListener onClickAway={() => onClickAwayFolder(folder.id)} key={folder.id}>
+                    <StyledFolder>
+                      <div className={classNames("text-body d-flex align-items-center file-card-item", { "sidebar-item-active": selectedSidebarItem === folder.id } )}
+                        onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
+                        onClick={() => handleFolderClick(folder.id)}
+                      >
+                        <i className="mdi mdi-folder font-size-16 text-warning me-2"></i>{" "}
+                        <span className="me-auto">{folder.name}</span>
+                        <i
+                          className={
+                            openFolders.includes(folder.id)
+                              ? "mdi mdi-chevron-up accor-down-icon ms-auto"
+                              : "mdi mdi-chevron-down accor-down-icon ms-auto"
+                          }
+                        />
                       </div>
-                    </Collapse>
-                  </StyledFolder>
+                      <Collapse isOpen={openFolders.includes(folder.id)}>
+                        <div className="card border-0 shadow-none ps-2 mb-0">
+                          <ul className="list-unstyled mb-0">
+                            {folder.files.map(file => (
+                              <StyledFile key={file.id}
+                                className={classNames({ "sidebar-item-active": selectedSidebarItem === file.id } )}
+                                onContextMenu={e => displayMenu(e, file.id, FILE_MENU_ID)}
+                                onClick={() => handleFileClick(file.id)}
+                              >
+                                <Link to="#" className="d-flex align-items-center">
+                                  <span className="me-auto">{file.name}</span>
+                                  {file.isPinned && (
+                                    <>
+                                      {" "}
+                                      <i className="mdi mdi-pin ms-auto"></i>
+                                    </>
+                                  )}
+                                </Link>
+                              </StyledFile>
+                            ))}
+                          </ul>
+                        </div>
+                      </Collapse>
+                    </StyledFolder>
+                  </ClickAwayListener>
                 ))}
                 <div style={{height: 4}}></div>
                 {rootFiles.map(file => (
