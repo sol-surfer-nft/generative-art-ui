@@ -16,23 +16,34 @@ import Storage from "./Storage"
 import { AddFileModal, AddFolderModal, RenameFileModal, RenameFolderModal } from './modals'
 
 const series = [76]
+const defaultModalType = "add-file"
 
 const FileManager = () => {
   const [folders, setFolders] = useRecoilState(foldersState)
   const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
 
   const [modal, setModal] = useState(false)
-  const [modalType, setModalType] = useState("add-file") // "add-file", "add-folder", "rename-file", "rename-folder"
+  const [modalType, setModalType] = useState(defaultModalType) // "add-file", "add-folder", "rename-file", "rename-folder"
+  const [activeId, setActiveId] = useState(null) // for the item being edited in the modal
 
-  const toggleModal = (fileType = "add-file") => {
+  useEffect(() => {
+    return () => reset()
+  }, [])
+
+  const toggleModal = (fileType, itemId = null) => {
+    if(itemId) setActiveId(itemId)
+    
     console.log('toggling modal')
+
     setModal(prev => !prev)
-    if(modalType !== fileType) setModalType(fileType)
+
+    if(modalType !== fileType)
+      setModalType(fileType)
   }
 
   const closeModal = () => {
     setModal(false)
-    setModalType("add-file")
+    setModalType(defaultModalType)
   }
 
   const onFileModalSubmit = async (filename) => {
@@ -41,12 +52,27 @@ const FileManager = () => {
       setTimeout(() => {
         // Add file with filename to project, then resolve successful to close the modal
         if(!filename) return reject("Error: File name not found")
+        if(!activeId && modalType === "rename-file") return reject("Error: The file you identified was not found")
 
-        setRootFiles(prevRootFiles => ([...prevRootFiles, {
-          id: nanoid(),
-          name: filename,
-          gb: Math.floor(Math.random() * 5) + 1
-        }]))
+        if(modalType === "add-file") {
+          setRootFiles(prevRootFiles => ([...prevRootFiles, {
+            id: nanoid(),
+            name: filename,
+            gb: Math.floor(Math.random() * 5) + 1
+          }]))
+        }
+        else if(modalType === "rename-file") {
+          setRootFiles(prevRootFiles => prevRootFiles.map(prevRootFile => {
+            if(prevRootFile.id === activeId) {
+              return {
+                ...prevRootFile,
+                name: filename
+              }
+            }
+            return prevRootFile
+          }))
+        }
+        else return reject("Error: Unknown exception occured")
 
         resolve("success!")
       }, 1000)
@@ -59,16 +85,37 @@ const FileManager = () => {
       setTimeout(() => {
         // Add file with filename to project, then resolve successful to close the modal
         if(!foldername) return reject("Error: Folder name not found")
+        if(!activeId && modalType === "rename-folder") return reject("Error: The folder you identified was not found")
 
-        setFolders(prevFolders => ([...prevFolders, {
-          id: nanoid(),
-          name: foldername,
-          files: [],
-        }]))
+        if(modalType === "add-folder") {
+          setFolders(prevFolders => ([...prevFolders, {
+            id: nanoid(),
+            name: foldername,
+            files: [],
+          }]))
+        }
+        else if(modalType === "rename-folder") {
+          setFolders(prevFolders => prevFolders.map(prevFolder => {
+            if(prevFolder.id === activeId) {
+              return {
+                ...prevFolder,
+                name: foldername
+              }
+            }
+            return prevFolder;
+          }))
+        }
+        else return reject("Error: Unknown exception occured")
 
         resolve("success!")
       }, 1000)
     })
+  }
+
+  const reset = () => {
+    setActiveId(null)
+    setModal(false)
+    setModalType(defaultModalType)
   }
   
   return (

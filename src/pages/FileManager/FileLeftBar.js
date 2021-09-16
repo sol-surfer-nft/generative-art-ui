@@ -96,16 +96,22 @@ const FileRightBar = ({
 
   const { show } = useContextMenu();
 
-  const addFolder = () => setFolders([
-    ...folders,
-    {
-      id: nanoid(),
-      name: "Untitled",
-      files: []
-    }
-  ])
+  const addFolder = () => {
+    // toggleModal("add-folder")
+    setFolders([
+      ...folders,
+      {
+        id: nanoid(),
+        name: "Untitled",
+        files: []
+      }
+    ])
+  }
 
   const addFile = (folderId = undefined) => {
+    // TODO: swap to modal, then proceed with logic and the final name
+    // Note: Might be time to refactor this logic code to its own service
+
     let filename = "Untitled-" + nanoid(4)
     const newFile = {
       id: nanoid(),
@@ -200,7 +206,7 @@ const FileRightBar = ({
 
   const renameFolder = folderId => {
     console.log('rename folder not implemented yet. folder id:', folderId)
-    toggleModal("rename-folder")
+    toggleModal("rename-folder", folderId)
   }
 
   function handleFileItemClick({ event, props, triggerEvent, data }){
