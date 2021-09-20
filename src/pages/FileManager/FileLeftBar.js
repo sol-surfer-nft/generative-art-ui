@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { useRecoilState } from 'recoil'
-import { foldersState, filesState, rootFilesState, modalState } from '../../atoms'
+import { foldersState, filesState, rootFilesState, modalState } from '../../state/atoms'
 import styled from 'styled-components'
 import {
   Card,

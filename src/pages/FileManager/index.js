@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Card, CardBody } from "reactstrap"
 import { useRecoilState } from 'recoil'
-import { foldersState, rootFilesState } from '../../atoms'
+import { foldersState, rootFilesState } from '../../state/atoms'
 import { nanoid } from 'nanoid'
 
 //Import Breadcrumb
@@ -46,22 +46,22 @@ const FileManager = () => {
     setModalType(defaultModalType)
   }
 
-  const onFileModalSubmit = async (filename) => {
+  const onFileModalSubmit = async (filename, type) => {
     return new Promise((resolve, reject) => {
       // Mock response. Can try/catch here too
       setTimeout(() => {
         // Add file with filename to project, then resolve successful to close the modal
         if(!filename) return reject("Error: File name not found")
-        if(!activeId && modalType === "rename-file") return reject("Error: The file you identified was not found")
+        if(!activeId && type === "rename-file") return reject("Error: The file you identified was not found")
 
-        if(modalType === "add-file") {
+        if(type === "add-file") {
           setRootFiles(prevRootFiles => ([...prevRootFiles, {
             id: nanoid(),
             name: filename,
             gb: Math.floor(Math.random() * 5) + 1
           }]))
         }
-        else if(modalType === "rename-file") {
+        else if(type === "rename-file") {
           setRootFiles(prevRootFiles => prevRootFiles.map(prevRootFile => {
             if(prevRootFile.id === activeId) {
               return {
@@ -79,22 +79,22 @@ const FileManager = () => {
     })
   }
 
-  const onFolderModalSubmit = async (foldername) => {
+  const onFolderModalSubmit = async (foldername, type) => {
     return new Promise((resolve, reject) => {
       // Mock response. Can try/catch here too
       setTimeout(() => {
         // Add file with filename to project, then resolve successful to close the modal
         if(!foldername) return reject("Error: Folder name not found")
-        if(!activeId && modalType === "rename-folder") return reject("Error: The folder you identified was not found")
+        if(!activeId && type === "rename-folder") return reject("Error: The folder you identified was not found")
 
-        if(modalType === "add-folder") {
+        if(type === "add-folder") {
           setFolders(prevFolders => ([...prevFolders, {
             id: nanoid(),
             name: foldername,
             files: [],
           }]))
         }
-        else if(modalType === "rename-folder") {
+        else if(type === "rename-folder") {
           setFolders(prevFolders => prevFolders.map(prevFolder => {
             if(prevFolder.id === activeId) {
               return {
@@ -131,29 +131,30 @@ const FileManager = () => {
                   <FileList modal={modal} toggleModal={toggleModal} />
                   <RecentFiles />
 
+                  {/* Optimize: Combine modal and modalType into single string value */}
                   <AddFileModal
                     isOpen={modal && modalType === "add-file"}
                     toggleModal={toggleModal}
                     closeModal={closeModal}
-                    onSubmit={onFileModalSubmit}
+                    onSubmit={(filetype) => onFileModalSubmit(filetype, "add-file")}
                   />
                   <AddFolderModal
                     isOpen={modal && modalType === "add-folder"}
                     toggleModal={toggleModal}
                     closeModal={closeModal}
-                    onSubmit={onFolderModalSubmit}
+                    onSubmit={(foldername) => onFolderModalSubmit(foldername, "add-folder")}
                   />
                   <RenameFileModal
                     isOpen={modal && modalType === "rename-file"}
                     toggleModal={toggleModal}
                     closeModal={closeModal}
-                    onSubmit={onFileModalSubmit}
+                    onSubmit={(filetype) => onFileModalSubmit(filetype, "rename-file")}
                   />
                   <RenameFolderModal
                     isOpen={modal && modalType === "rename-folder"}
                     toggleModal={toggleModal}
                     closeModal={closeModal}
-                    onSubmit={onFolderModalSubmit}
+                    onSubmit={(foldername) => onFolderModalSubmit(foldername, "rename-folder")}
                   />
                 </CardBody>
               </Card>

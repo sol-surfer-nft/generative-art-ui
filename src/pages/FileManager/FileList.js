@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { foldersState, filesState } from '../../atoms'
+import { foldersState, filesState } from '../../state/atoms'
 import {
   Card,
   CardBody,

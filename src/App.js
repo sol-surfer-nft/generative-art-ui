@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 
 import { Switch, BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import { connect } from "react-redux"
-import { filesState } from './atoms'
+import { filesState } from './state/atoms'
 import { useRecoilState } from 'recoil'
 
 // Profile
@@ -18,7 +18,7 @@ import ForgotPassword from "./pages/Authentication/ForgetPassword"
 // Dashboard
 import Dashboard from "./pages/Dashboard/index"
 import Preview from "./pages/Preview/index"
-import OrderItems from './pages/Tables/DragDropTables'
+import Order from './pages/Order/index'
 // import OrderItems from "./pages/OrderItems/index"
 
 // layouts Format
@@ -51,7 +51,7 @@ fakeBackend()
 // initFirebaseBackend(firebaseConfig)
 
 const App = props => {
-  const [isAuth, setIsAuth] = useState(true);
+  const [isAuth, setIsAuth] = useState(true); // default to 'True' until Web3 Auth is added
 
   const files = useRecoilState(filesState)
 
@@ -78,7 +78,7 @@ const App = props => {
               <>
                 <Route exact path={["/", "/dashboard"]} component={Dashboard} />
                 <Route exact path="/profile" component={UserProfile} />
-                <Route exact path="/order" component={OrderItems} />
+                <Route exact path="/order" component={Order} />
                 <Route exact path="/preview" component={Preview} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>
