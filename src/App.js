@@ -19,6 +19,8 @@ import ForgotPassword from "./pages/Authentication/ForgetPassword"
 import Dashboard from "./pages/Dashboard/index"
 import Preview from "./pages/Preview/index"
 import Build from './pages/Build/index'
+import Info from './pages/Info/index'
+import Publish from './pages/Publish/index'
 // import OrderItems from "./pages/OrderItems/index"
 
 // layouts Format
@@ -80,6 +82,8 @@ const App = props => {
                 <Route exact path="/profile" component={UserProfile} />
                 <Route exact path="/build" component={Build} />
                 <Route exact path="/preview" component={Preview} />
+                <Route exact path="/info" component={Info} />
+                <Route exact path="/publish" component={Publish} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>
             )}

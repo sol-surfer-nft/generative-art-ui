@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
-import { Collapse } from "reactstrap"
+import { Collapse, DropdownItem } from "reactstrap"
 import { Link, withRouter } from "react-router-dom"
 import classname from "classnames"
 
@@ -14,6 +14,8 @@ const Navbar = props => {
   const [dashboard, setdashboard] = useState(false)
   const [order, setOrder] = useState(false)
   const [preview, setPreview] = useState(false)
+  const [info, setInfo] = useState(false)
+  const [publish, setPublish] = useState(false)
   const [app, setapp] = useState(false)
 
   // useEffect(() => {
@@ -71,7 +73,7 @@ const Navbar = props => {
               className="navbar-collapse"
               id="topnav-menu-content"
             >
-              <ul className="navbar-nav">
+              <ul className="navbar-nav" style={{marginRight: "auto"}}>
                 <li className="nav-item dropdown">
                   <Link
                     className="nav-link dropdown-toggle arrow-none"
@@ -81,22 +83,6 @@ const Navbar = props => {
                     <i className="bx bx-home-circle me-2"></i>
                     {props.t("Home")}
                   </Link>
-                  {/* <div
-                    className={classname("dropdown-menu", { show: dashboard })}
-                  >
-                    <Link to="/dashboard" className="dropdown-item">
-                      {props.t("Default")}
-                    </Link>
-                    <Link to="#" className="dropdown-item">
-                      {props.t("Saas")}
-                    </Link>
-                    <Link to="#" className="dropdown-item">
-                      {props.t("Crypto")}
-                    </Link>
-                    <Link to="#" className="dropdown-item">
-                      {props.t("Blog")}
-                    </Link>
-                  </div> */}
                 </li>
 
                 <li className="nav-item dropdown">
@@ -105,7 +91,7 @@ const Navbar = props => {
                     onClick={() => setOrder(prevOrder => !prevOrder)}
                     to="/build"
                   >
-                    <i className="bx bx-move-vertical me-2"></i>
+                    <i className="mdi mdi-tools me-2"></i>
                     {props.t("Build")}
                   </Link>
                 </li>
@@ -116,10 +102,96 @@ const Navbar = props => {
                     onClick={() => setPreview(prevPreview => !prevPreview)}
                     to="/preview"
                   >
-                    <i className="bx bx-move-vertical me-2"></i>
+                    <i className="mdi mdi-eye-outline me-2"></i>
                     {props.t("Preview")}
                   </Link>
                 </li>
+
+                <li className="nav-item dropdown">
+                  <Link
+                    className="nav-link dropdown-toggle arrow-none"
+                    onClick={() => setPublish(prevPublish => !prevPublish)}
+                    to="/publish"
+                  >
+                    <i className="bx bx-comment-check me-2"></i>
+                    {props.t("Publish")}
+                  </Link>
+                </li>
+              </ul>
+
+              <ul className="navbar-nav">
+                <li className="nav-item dropdown">
+                    <Link
+                      to="/more"
+                      onClick={e => {
+                        e.preventDefault()
+                        setapp(!app)
+                      }}
+                      className="nav-link dropdown-togglez arrow-none navbar-dropdown-item"
+                    >
+                      {/* <i className="bx bx-dots-horizontal-rounded me-2"></i> */}
+                      {props.t("More")}
+                      <div className="arrow-down"></div>
+                    </Link>
+                    <div className={classname("dropdown-menu dropdown-menu-end", { show: app })}>
+                      <Link
+                        to="/info"
+                        onClick={e => {
+                          setInfo(true)
+                          setapp(false)
+                        }}
+                        className="dropdown-item navbar-dropdown-item"
+                      >
+                        {/* Info Icon */}
+                        <i className="bx bx-info-circle me-2"></i>
+                        {props.t("App Info")}
+                      </Link>
+                      <DropdownItem divider />
+                      {/* External Links: */}
+                      <a
+                        href="https://solsurfer.xyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="dropdown-item navbar-dropdown-item"
+                      >
+                        {/* Info Icon */}
+                        <i className="bx bx-link me-2"></i>
+                        {props.t("Website")}
+                      </a>
+                      <a
+                        href="https://app.solsurfer.xyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="dropdown-item navbar-dropdown-item"
+                      >
+                        {/* Info Icon */}
+                        <i className="bx bx-link me-2"></i>
+                        {props.t("Marketplace")}
+                      </a>
+                      <DropdownItem divider />
+                      <a
+                        href="https://twitter.com/solsurfer_xyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="dropdown-item navbar-dropdown-item"
+                      >
+                        {/* Info Icon */}
+                        <i className="bx bxl-twitter me-2"></i>
+                        {props.t("Twitter")}
+                      </a>
+                      <a
+                        href="https://github.com/sol-surfer-nft"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="dropdown-item navbar-dropdown-item"
+                      >
+                        {/* Info Icon */}
+                        <i className="bx bxl-github me-2"></i>
+                        {props.t("GitHub")}
+                      </a>
+                    </div>
+                  </li>
+                </ul>
 
                 {/* <li className="nav-item dropdown">
                   <Link
@@ -227,31 +299,6 @@ const Navbar = props => {
                     </Row>
                   </div>
                 </li> */}
-
-                <li className="nav-item dropdown">
-                  <Link
-                    to="/more"
-                    onClick={e => {
-                      e.preventDefault()
-                      setapp(!app)
-                    }}
-                    className="nav-link dropdown-togglez arrow-none navbar-dropdown-item"
-                  >
-                    <i className="bx bx-dots-horizontal-rounded me-2"></i>
-                    {props.t("More")}
-                    <div className="arrow-down"></div>
-                  </Link>
-                  <div className={classname("dropdown-menu", { show: app })}>
-                    <Link
-                      to="/more"
-                      onClick={e => {
-                        e.preventDefault()
-                        setapp(false)
-                      }}
-                      className="dropdown-item navbar-dropdown-item"
-                    >
-                      Nothing Here
-                    </Link>
                     {/* <Link to="#" className="dropdown-item">
                       {props.t("Calendar")}
                     </Link>
@@ -523,8 +570,6 @@ const Navbar = props => {
                         </Link>
                       </div>
                     </div> */}
-                  </div>
-                </li>
 
                 {/* <li className="nav-item dropdown">
                   <Link
@@ -853,7 +898,6 @@ const Navbar = props => {
                     </div>
                   </div>
                 </li> */}
-              </ul>
             </Collapse>
           </nav>
         </div>

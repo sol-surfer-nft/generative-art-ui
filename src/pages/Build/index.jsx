@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import MetaTags from 'react-meta-tags';
-import { Container, Collapse, Input, Form, Col, InputGroup } from "reactstrap"
+import { Container, Collapse, Input, Form, Col } from "reactstrap"
 import { attributesState } from '../../state/attributes.atoms'
 import DragDropTable from '../../resources/Tables/DragDropTables'
 import EditableTable from '../../resources/Tables/EditableTables'
-import ClickAwayListener from 'react-click-away-listener';
 import { nanoid } from 'nanoid'
 
 /**
@@ -88,14 +87,6 @@ const BuildPage = props => {
   const [formData, setFormData] = useState(initialFormState)
   const [formLoading, setFormLoading] = useState(false)
   const [formErrors, setFormErrors] = useState(null)
-
-  // const inputRef = useRef()
-
-  // useEffect(() => {
-  //   if (inputRef && inputRef.current && formActive) {
-  //     inputRef.current.focus();
-  //   }
-  // }, [formActive, inputRef]);
 
   const setOpen = (attributeId) => {
     console.log('setting open with id:', attributeId)
@@ -220,29 +211,22 @@ const BuildPage = props => {
             {/* Add Attribute Form */}
             {/* Add Attribute Icon Button */}
             {formActive && (
-              // <ClickAwayListener onClickAway={handleFormClickAway}>
-                /* <form className="add-attribute" onSubmit={onFormSubmit} onKeyDown={e => handleFormKeyDown(e.keyCode)}>
-                  <div className="editable-attribute">
-                    <Input ref={inputRef} autoFocus type="text" value={formData.attributeName} onChange={handleChange} name="attributeName" className="name-input" />
-                  </div>
-                </form> */
-                <Form className="add-attribute row row-cols-lg-auto g-3 align-items-center" onKeyDown={e => handleFormKeyDown(e.keyCode)} onSubmit={onFormSubmit}>
-                  <Col xs={12}>
-                    <label className="visually-hidden" htmlFor="attributeNameId">Username</label>
-                    <Input type="text" autoFocus className="form-control" value={formData.attributeName} onChange={handleChange} id="attributeNameId" placeholder="Name" name="attributeName" />
-                  </Col>
+              <Form className="add-attribute row row-cols-lg-auto g-3 align-items-center" onKeyDown={e => handleFormKeyDown(e.keyCode)} onSubmit={onFormSubmit}>
+                <Col xs={12}>
+                  <label className="visually-hidden" htmlFor="attributeNameId">Username</label>
+                  <Input type="text" autoFocus className="form-control" value={formData.attributeName} onChange={handleChange} id="attributeNameId" placeholder="Name" name="attributeName" />
+                </Col>
 
-                  <Col xs={12}>
-                    <label className="visually-hidden" htmlFor="attributeRarityId">Preference</label>
-                    <Input type="number" className="rarity-input" value={formData.attributeRarity} onChange={handleChange} name="attributeRarity" id="attributeRarityId" />
-                  </Col>
+                <Col xs={12}>
+                  <label className="visually-hidden" htmlFor="attributeRarityId">Preference</label>
+                  <Input type="number" className="rarity-input" value={formData.attributeRarity} onChange={handleChange} name="attributeRarity" id="attributeRarityId" />
+                </Col>
 
-                  <Col xs={12}>
-                    <button type="submit" disabled={formLoading} className="btn btn-primary add-attribute-button w-md">Add</button>
-                    <button type="button" disabled={formLoading} onClick={handleFormClickAway} className="btn btn-light add-attribute-button w-md">Cancel</button>
-                  </Col>
-                </Form>
-              // </ClickAwayListener>
+                <Col xs={12}>
+                  <button type="submit" disabled={formLoading} className="btn btn-primary add-attribute-button w-md">Add</button>
+                  <button type="button" disabled={formLoading} onClick={handleFormClickAway} className="btn btn-light add-attribute-button w-md">Cancel</button>
+                </Col>
+              </Form>
             )}
 
             <h6 style={{fontWeight: "bold", marginBottom: 8}}>Attributes</h6>
