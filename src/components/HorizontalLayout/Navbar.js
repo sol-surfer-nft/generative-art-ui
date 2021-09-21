@@ -103,10 +103,10 @@ const Navbar = props => {
                   <Link
                     className="nav-link dropdown-toggle arrow-none"
                     onClick={() => setOrder(prevOrder => !prevOrder)}
-                    to="/order"
+                    to="/build"
                   >
                     <i className="bx bx-move-vertical me-2"></i>
-                    {props.t("Order")}
+                    {props.t("Build")}
                   </Link>
                 </li>
 

@@ -18,7 +18,7 @@ import ForgotPassword from "./pages/Authentication/ForgetPassword"
 // Dashboard
 import Dashboard from "./pages/Dashboard/index"
 import Preview from "./pages/Preview/index"
-import Order from './pages/Order/index'
+import Build from './pages/Build/index'
 // import OrderItems from "./pages/OrderItems/index"
 
 // layouts Format
@@ -78,7 +78,7 @@ const App = props => {
               <>
                 <Route exact path={["/", "/dashboard"]} component={Dashboard} />
                 <Route exact path="/profile" component={UserProfile} />
-                <Route exact path="/order" component={Order} />
+                <Route exact path="/build" component={Build} />
                 <Route exact path="/preview" component={Preview} />
                 {/* <Redirect exact from="/" to="/dashboard" /> */}
               </>
