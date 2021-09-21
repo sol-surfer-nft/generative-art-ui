@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Suspense, lazy } from "react"
 
 import { Switch, BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import { connect } from "react-redux"
 import { filesState } from './state/atoms'
 import { useRecoilState } from 'recoil'
-
-// Profile
-import UserProfile from "./pages/Authentication/user-profile"
 
 // Authentication related pages
 import Login from "./pages/Authentication/Login"
@@ -15,13 +12,8 @@ import Logout from "./pages/Authentication/Logout"
 import Register from "./pages/Authentication/Register"
 import ForgotPassword from "./pages/Authentication/ForgetPassword"
 
-// Dashboard
+// User Pages
 import Dashboard from "./pages/Dashboard/index"
-import Preview from "./pages/Preview/index"
-import Build from './pages/Build/index'
-import Info from './pages/Info/index'
-import Publish from './pages/Publish/index'
-// import OrderItems from "./pages/OrderItems/index"
 
 // layouts Format
 import HorizontalLayout from "./components/HorizontalLayout/"
@@ -68,26 +60,26 @@ const App = props => {
       <Router>
         <Switch>
           <Layout>
-            {/* Public Routes */}
-            <Route exact path="/logout" component={Logout} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/forgot-password" component={ForgotPassword} />
-            <Route exact path="/register" component={Register} />
+            <Suspense fallback={<div className="page-content"><p>Not Found</p></div>}>
+              {/* Public Routes */}
+              <Route exact path="/logout" component={Logout} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/forgot-password" component={ForgotPassword} />
+              <Route exact path="/register" component={Register} />
 
-
-            {/* Auth Protected Routes */}
-            {isAuth && (
-              <>
-                <Route exact path={["/", "/dashboard"]} component={Dashboard} />
-                <Route exact path="/profile" component={UserProfile} />
-                <Route exact path="/build" component={Build} />
-                <Route exact path="/preview" component={Preview} />
-                <Route exact path="/info" component={Info} />
-                <Route exact path="/publish" component={Publish} />
-                {/* <Redirect exact from="/" to="/dashboard" /> */}
-              </>
-            )}
-
+              {/* Auth Protected Routes */}
+              {isAuth && (
+                <>
+                  <Route exact path={["/", "/dashboard"]} component={Dashboard} />
+                  <Route exact path="/profile" component={lazy(() => import("./pages/Authentication/user-profile"))} />
+                  <Route exact path="/build" component={lazy(() => import("./pages/Build/"))} />
+                  <Route exact path="/preview" component={lazy(() => import("./pages/Preview/"))} />
+                  <Route exact path="/info" component={lazy(() => import("./pages/Info/"))} />
+                  <Route exact path="/publish" component={lazy(() => import("./pages/Publish/"))} />
+                  {/* <Redirect exact from="/" to="/dashboard" /> */}
+                </>
+              )}
+            </Suspense>
           </Layout>
         </Switch>
       </Router>

@@ -80,8 +80,8 @@ const Navbar = props => {
                     onClick={() => setdashboard(prevDashboard => !prevDashboard)}
                     to="/dashboard"
                   >
-                    <i className="bx bx-home-circle me-2"></i>
-                    {props.t("Home")}
+                    <i className="fas fa-file-upload me-2"></i>
+                    {props.t("Assets")}
                   </Link>
                 </li>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import MetaTags from 'react-meta-tags';
-import { Container, Collapse, Input, Form, Col } from "reactstrap"
+import { Container, Collapse, Input, Form, Col, Card } from "reactstrap"
 import { attributesState } from '../../state/attributes.atoms'
 import DragDropTable from '../../resources/Tables/DragDropTables'
 import EditableTable from '../../resources/Tables/EditableTables'
@@ -242,13 +242,15 @@ const BuildPage = props => {
               </li>
               {attributes.map((attribute, index) => (
                 <StyledAttribute key={attribute.id}>
-                  <div className="attribute-item" onClick={() => setOpen(attribute.id)}>
-                    <p className="attribute-item-text" style={{fontWeight:600}}>{index}.{" "}</p>
-                    <div className="attribute-item-body">
-                      <p className="attribute-item-text">{attribute.name}</p>
+                  <Card>
+                    <div className="attribute-item" onClick={() => setOpen(attribute.id)}>
+                      <p className="attribute-item-text" style={{fontWeight:600}}>{index}.{" "}</p>
+                      <div className="attribute-item-body">
+                        <p className="attribute-item-text">{attribute.name}</p>
+                      </div>
+                      <p className="attribute-item-text">{attribute.traits.length}</p>
                     </div>
-                    <p className="attribute-item-text">{attribute.traits.length}</p>
-                  </div>
+                  </Card>
                   <Collapse isOpen={openAttributes.includes(attribute.id)}>
                     <h6 className="attributes-item-header" style={{fontWeight:"bold",marginBottom:2,marginTop:5,marginLeft:40}}>Traits:</h6>
                     {attribute.traits.map((trait, index) => (
@@ -275,7 +277,7 @@ const BuildPage = props => {
               ))}
             </ul>
 
-            <h4 style={{marginTop: 80}}>Order</h4>
+            {/* <h4 style={{marginTop: 80}}>Order</h4> */}
 
             {/* Attributes List */}
             <DragDropTable />
