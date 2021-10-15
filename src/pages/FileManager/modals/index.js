@@ -9,13 +9,14 @@ export const AddFileModal = ({
   onSubmit,
   centered = true
 }) => {
-  const [foldername, setFoldername] = useState("")
+  const [filename, setFilename] = useState("")
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState(null)
 
   useEffect(() => {
-    return () => resetModal()
-  }, [])
+    if(!isOpen)
+      resetModal()
+  }, [isOpen])
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -23,7 +24,7 @@ export const AddFileModal = ({
     setLoading(true)
 
     try {
-      let response = await onSubmit(foldername)
+      let response = await onSubmit(filename, "add-file")
       console.log('response:', response)
       setLoading(false)
       closeModal()
@@ -38,7 +39,7 @@ export const AddFileModal = ({
   const resetModal = () => {
     setLoading(false)
     setErrors(null)
-    setFoldername("")
+    setFilename("")
   }
 
   return (
@@ -77,8 +78,8 @@ export const AddFileModal = ({
             <Input
               type="text"
               autoFocus
-              value={foldername}
-              onChange={e => setFoldername(e.target.value)}
+              value={filename}
+              onChange={e => setFilename(e.target.value)}
               placeholer="Untitled Folder"
               className="form-control"
               id="modal-add-file-input"
@@ -115,16 +116,23 @@ export const AddFolderModal = ({
   const [errors, setErrors] = useState(null)
 
   useEffect(() => {
-    return () => resetModal()
-  }, [])
+    if(!isOpen)
+      resetModal()
+  }, [isOpen])
 
   const handleSubmit = async e => {
     e.preventDefault();
     setErrors(null)
+
+    if(!foldername) {
+      setErrors("Folder name cannot be empty")
+      return
+    }
+    
     setLoading(true)
 
     try {
-      let response = await onSubmit(foldername)
+      let response = await onSubmit(foldername, "add-folder")
       console.log('response:', response)
       setLoading(false)
       closeModal()
@@ -211,21 +219,29 @@ export const RenameFileModal = ({
   onSubmit,
   centered = true
 }) => {
-  const [foldername, setFoldername] = useState("")
+  const [filename, setFilename] = useState("")
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState(null)
 
   useEffect(() => {
-    return () => resetModal()
-  }, [])
+    if(!isOpen)
+      resetModal()
+  }, [isOpen])
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     setErrors(null)
+
+    if(!filename) {
+      setErrors("Filename cannot be empty")
+      return;
+    }
+
     setLoading(true)
 
     try {
-      let response = await onSubmit(foldername)
+      let response = await onSubmit(filename, "rename-file")
       console.log('response:', response)
       setLoading(false)
       closeModal()
@@ -240,7 +256,7 @@ export const RenameFileModal = ({
   const resetModal = () => {
     setLoading(false)
     setErrors(null)
-    setFoldername("")
+    setFilename("")
   }
 
   return (
@@ -279,8 +295,8 @@ export const RenameFileModal = ({
             <Input
               type="text"
               autoFocus
-              value={foldername}
-              onChange={e => setFoldername(e.target.value)}
+              value={filename}
+              onChange={e => setFilename(e.target.value)}
               placeholer="Untitled Folder"
               className="form-control"
               id="modal-add-file-input"
@@ -317,16 +333,23 @@ export const RenameFolderModal = ({
   const [errors, setErrors] = useState(null)
 
   useEffect(() => {
-    return () => resetModal()
-  }, [])
+    if(!isOpen)
+      resetModal()
+  }, [isOpen])
 
   const handleSubmit = async e => {
     e.preventDefault();
     setErrors(null)
+
+    if(!foldername) {
+      setErrors("Folder name cannot be empty")
+      return;
+    }
+
     setLoading(true)
 
     try {
-      let response = await onSubmit(foldername)
+      let response = await onSubmit(foldername, "rename-folder")
       console.log('response:', response)
       setLoading(false)
       closeModal()

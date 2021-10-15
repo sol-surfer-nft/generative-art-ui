@@ -22,6 +22,8 @@ import {
   useContextMenu
 } from "react-contexify";
 import classNames from "classnames"
+import { ModalType } from "."
+import { Folder } from "state/initialData"
 // import ClickAwayListener from 'react-click-away-listener';
 
 const FILE_MENU_ID = "file-menu-id";
@@ -81,19 +83,34 @@ const StyledUploadButton = styled.div`
 
 const MAX_FILES = 50
 
+interface FileLeftBarProps {
+  modal: any
+  toggleModal: (type: ModalType, itemId?: null | string) => void
+  openFile: (id: string) => void
+  openFolder: (name: string) => void
+  editFile: (id: string) => void
+  removeFile: (id: string) => void
+  removeFolder: (id: string) => void
+}
+
 // file: id, name, file, Gb
-const FileRightBar = ({
+const FileLeftBar = ({
   modal,
-  toggleModal
-}) => {
-  const [openFolders, setOpenFolders] = useState([])
+  toggleModal,
+  openFile,
+  openFolder,
+  editFile,
+  removeFile,
+  removeFolder
+}: FileLeftBarProps) => {
+  const [openFolders, setOpenFolders] = useState<string[]>([])
 
   // const [folders, setFolders] = useRecoilState(foldersState)
   // const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
   // const [files, setFiles] = useRecoilState(filesState)
   const [fileTree, setFileTree] = useRecoilState(fileTreeState)
-  const [fileBrowser, setFileBrowser] = useRecoilState(fileBrowserState)
-  const currentFileTree = useRecoilValue(fileTreeSelector)
+  // const [fileBrowser, setFileBrowser] = useRecoilState(fileBrowserState)
+  // const currentFileTree = useRecoilValue(fileTreeSelector)
 
   const [folders, setFolders] = useRecoilState(rootFoldersSelector)
 
@@ -101,147 +118,7 @@ const FileRightBar = ({
 
   const { show } = useContextMenu();
 
-  const addFolder = (folderId, name = undefined) => {
-    // toggleModal("add-folder")
-    // add to root of fileTree
-    if(!folderId || folderId === fileTree.id)
-      setFileTree(prevTree => ([
-        ...prevTree,
-        {
-          id: nanoid(),
-          name: name || ("Untitled-" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9)),
-          files: [],
-          folders: []
-        }
-      ]))
-    else {
-      // Add folder to relevant place
-      const getNextFolder = (folder, nextIndex) => {
-        let found2 = folder.folders.find(folder => folder.id === folderId)
-        if(found2) {
-          console.log('found!', found2)
-          return found2
-        }
-        else if (nextIndex + 1 < folder.folders.length) {
-          console.log('returning next folder')
-          getNextFolder(folder.folders[nextIndex], nextIndex + 1)
-        }
-        else {
-          console.log('nothing found. returning blank')
-          return;
-        }
-      }
-      // see if is in root
-      let foundFolder = fileTree.folders.find(folder => folder.id === folderId)
-      if(!foundFolder) {
-        // is not in root. run recursively
-        let nextFolder = getNextFolder(fileTree.folders[0], 0)
-        console.log('next folder:', nextFolder)
-      }
-    }
-  }
-
-  const addFile = (folderId = undefined) => {
-    // TODO: swap to modal, then proceed with logic and the final name
-    // Note: Might be time to refactor this logic code to its own service
-
-    let filename = "Untitled-" + nanoid(4)
-    const newFile = {
-      id: nanoid(),
-      name: filename,
-      gb: Math.floor(Math.random() * 5) + 1
-    }
-
-    if(!folderId) {
-      // Check if a directory or file is currently active, and get its level
-      if(selectedSidebarItem) {
-        // check if its a root file
-        let rootFound = fileTree.files.find(rootFile => rootFile.id === selectedSidebarItem)
-        if(rootFound) {
-          // Add to root level of tree
-          setFileTree(prevTree => ({
-            ...prevTree,
-            files: [...prevTree.files, newFile]
-          }))
-        }
-        else {
-          // search folders (TODO: optimize by storing helper data in state, along with the active item id. Keep state flattened though)
-          let folderFound = folders.find(folder => folder.id === selectedSidebarItem)
-          if(folderFound) {
-            // is folder, add file under folder
-            setFolders(prevFolders => prevFolders.map(prevFolder => {
-              if(prevFolder.id === selectedSidebarItem) {
-                return {
-                  ...prevFolder,
-                  files: [...prevFolder.files, newFile]
-                }
-              }
-              return prevFolder;
-            }))
-          }
-          else {
-            // search rest of files
-            let fileFound = files.find(file => file.id === selectedSidebarItem)
-            if(fileFound) {
-              // add to the file's parent folder (found in `file.folderId`)
-              setFolders(prevFolders => prevFolders.map(prevFolder => {
-                if(prevFolder.id === fileFound.folderId) {
-                  return {
-                    ...prevFolder,
-                    files: [...prevFolder.files, newFile]
-                  }
-                }
-                return prevFolder;
-              }))
-            }
-            else {
-              // Add file to root level anyways
-              setFileTree(prevTree => ({
-                ...prevTree,
-                files: [...prevTree.files, newFile]
-              }))
-            }
-          }
-        }
-      }
-      else {
-        // Add file to root level anyways
-        setFileTree(prevTree => ({
-          ...prevTree,
-          files: [...prevTree.files, newFile]
-        }))
-      }
-    }
-    else {
-      // Try to add file under folder id
-      setFolders(prevFolders => prevFolders.map(folder => {
-        if(folder.id === folderId) {
-          return {
-            ...folder,
-            files: [
-              ...folder.files,
-              {
-                id: nanoid(),
-                name: filename,
-                gb: Math.floor(Math.random() * 5) + 1
-              }
-            ]
-          }
-        }
-        return folder;
-      }))
-    }
-  }
-
-  const removeFolder = folderId => {
-    setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId))
-  }
-
-  const renameFolder = folderId => {
-    console.log('rename folder not implemented yet. folder id:', folderId)
-    toggleModal("rename-folder", folderId)
-  }
-
+  // @ts-ignore
   function handleFileItemClick({ event, props, triggerEvent, data }){
     console.log("props:", props)
     switch(event.currentTarget.id) {
@@ -252,9 +129,10 @@ const FileRightBar = ({
         editFile(props.id);
         break;
       case "rename":
-        renameFile(props.id);
+        toggleModal("rename-file", props.id);
         break;
       case "remove":
+        // @ts-ignore
         removeFile(props.id, props.root);
         break;
       default:
@@ -263,16 +141,19 @@ const FileRightBar = ({
     }
   }
 
+  // @ts-ignore
   function handleFolderItemClick({ event, props, triggerEvent, data }){
     switch(event.currentTarget.id) {
       case "open":
+        openFolder(props.name)
         handleFolderClick(props.id);
         break;
       case "add-file":
-        addFile(props.id);
+        // addFile(props.id);
+        toggleModal("add-file", props.id); // selectedSidebarItem
         break;
       case "rename":
-        renameFolder(props.id);
+        toggleModal("rename-folder", props.id)
         break;
       case "remove":
         removeFolder(props.id);
@@ -283,41 +164,17 @@ const FileRightBar = ({
     }
   }
 
-  function displayMenu(e, id, MENU_ID = FILE_MENU_ID, root=false){
+  // @ts-ignore
+  function displayMenu(e, id, MENU_ID = FILE_MENU_ID, root=false, foldername?: string){
     // console.log('display menu:', e, 'for folder with id:', id)
 
     // put whatever custom logic you need
     // you can even decide to not display the Menu
-    show(e, { id: MENU_ID, props: { id, root } });
+    show(e, { id: MENU_ID, props: { id, root, name: foldername } });
   }
 
-  const openFile = (fileId) => {
-    console.log('openFile not implemented yet')
-  }
-
-  const editFile = (fileId) => {
-    console.log('editFile not implemented yet')
-  }
-
-  const renameFile = fileId => {
-    console.log('renaming file')
-    toggleModal("rename-file")
-  }
-
-  const removeFile = (fileId, root = false) => {
-    if(!root) {
-      setFolders(prevFolders => prevFolders.map(folder => ({
-        ...folder,
-        files: folder.files.filter(file => file.id !== fileId)
-      })))
-    }
-    else {
-      setRootFiles(prevRootFiles => prevRootFiles.filter(rootFile => rootFile.id !== fileId))
-    }
-  }
-
-  const handleFolderClick = folderId => {
-    if(selectedSidebarItem !== folderId) setSelectedSidebarItem(folderId)
+  const handleFolderClick = (folderId: string) => {
+    if(selectedSidebarItem && selectedSidebarItem !== folderId) setSelectedSidebarItem(folderId)
     else setSelectedSidebarItem("")
 
     console.log('clicked folder with id:', folderId)
@@ -331,8 +188,8 @@ const FileRightBar = ({
     }
   }
 
-  const handleFileClick = (fileId, root = false) => {
-    if(selectedSidebarItem !== fileId) setSelectedSidebarItem(fileId)
+  const handleFileClick = (fileId: string, root = false) => {
+    if(selectedSidebarItem && selectedSidebarItem !== fileId) setSelectedSidebarItem(fileId)
     else setSelectedSidebarItem("")
 
     // Custom Logic for displaying files when clicked.
@@ -345,10 +202,11 @@ const FileRightBar = ({
     // }
   }
 
-  const handleFileUpload = () => {
-    console.log('not yet implemented')
-  }
+  // const handleFileUpload = () => {
+  //   console.log('not yet implemented')
+  // }
 
+  // @ts-ignore
   const onFileChange = (event) => {
     console.log('file upload event:', event)
     console.log('# files:', event.target.files.length)
@@ -365,9 +223,17 @@ const FileRightBar = ({
     }
   }
 
-  const onClickAwayFolder = (folderId) => {
-    console.log('clicked away from folder:', folderId)
+  const handleAddFolder = () => {
+    toggleModal("add-folder")
   }
+
+  const handleAddFile = () => {
+    toggleModal("add-file") // selectedSidebarItem
+  }
+
+  // const onClickAwayFolder = (folderId) => {
+  //   console.log('clicked away from folder:', folderId)
+  // }
 
   // To Do: Display modal to add new file
   // Add settings item back in to left sidebar
@@ -376,32 +242,40 @@ const FileRightBar = ({
   return (
     <React.Fragment>
       <Menu id={FILE_MENU_ID}>
+        {/* @ts-ignore */}
         <Item id="open" onClick={handleFileItemClick}>
           Open
         </Item>
+        {/* @ts-ignore */}
         <Item id="edit" onClick={handleFileItemClick}>
           Edit
         </Item>
+        {/* @ts-ignore */}
         <Item id="rename" onClick={handleFileItemClick}>
           Rename
         </Item>
         <Separator />
+        {/* @ts-ignore */}
         <Item id="remove" onClick={handleFileItemClick}>
           Remove
         </Item>
       </Menu>
 
       <Menu id={FOLDER_MENU_ID}>
+        {/* @ts-ignore */}
         <Item id="open" onClick={handleFolderItemClick}>
           Open
         </Item>
+        {/* @ts-ignore */}
         <Item id="add-file" onClick={handleFolderItemClick}>
           Add File
         </Item>
+        {/* @ts-ignore */}
         <Item id="rename" onClick={handleFolderItemClick}>
           Rename
         </Item>
         <Separator />
+        {/* @ts-ignore */}
         <Item id="remove" onClick={handleFolderItemClick}>
           Remove
         </Item>
@@ -433,10 +307,10 @@ const FileRightBar = ({
                     <i className="mdi mdi-plus me-1"></i> Create New
                   </DropdownToggle>
                   <DropdownMenu>
-                    <DropdownItem className="dropdown-item" onClick={() => addFolder()}>
+                    <DropdownItem className="dropdown-item" onClick={() => handleAddFolder()}>
                       <i className="bx bx-folder me-1"></i> Folder
                     </DropdownItem>
-                    <DropdownItem className="dropdown-item" onClick={() => addFile()}>
+                    <DropdownItem className="dropdown-item" onClick={() => handleAddFile()}>
                       <i className="bx bx-file me-1"></i> File
                     </DropdownItem>
                     <DropdownItem divider />
@@ -448,6 +322,7 @@ const FileRightBar = ({
                     </DropdownItem>
                     <DropdownItem className="dropdown-item">
                       <StyledUploadButton className="file-upload-button">
+                        {/* @ts-ignore */}
                         <input type="file" onChange={onFileChange} className="file-upload-input" directory="" webkitdirectory="" mozdirectory="" />
                         <i className="mdi mdi-upload me-1"></i>{" "}Folder Upload
                       </StyledUploadButton>
@@ -460,11 +335,11 @@ const FileRightBar = ({
               {/* Sidebar Folders / Files List */}
               <ul className="list-unstyled categories-list">
 
-                {folders.map(folder => (
+                {folders.map((folder: Folder) => (
                   // <ClickAwayListener onClickAway={() => onClickAwayFolder(folder.id)} key={folder.id}>
                     <StyledFolder key={folder.id}>
-                      <div className={classNames("text-body d-flex align-items-center file-card-item", { "sidebar-item-active": selectedSidebarItem === folder.id } )}
-                        onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
+                      <div className={classNames("text-body d-flex align-items-center file-card-item", { "sidebar-item-active": selectedSidebarItem && selectedSidebarItem === folder.id } )}
+                        onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID, false, folder.name)}
                         onClick={() => handleFolderClick(folder.id)}
                       >
                         <i className="mdi mdi-folder font-size-16 text-warning me-2"></i>{" "}
@@ -482,7 +357,7 @@ const FileRightBar = ({
                           <ul className="list-unstyled mb-0">
                             {folder.files.map(file => (
                               <StyledFile key={file.id}
-                                className={classNames({ "sidebar-item-active": selectedSidebarItem === file.id } )}
+                                className={classNames({ "sidebar-item-active": selectedSidebarItem && selectedSidebarItem === file.id } )}
                                 onContextMenu={e => displayMenu(e, file.id, FILE_MENU_ID)}
                                 onClick={() => handleFileClick(file.id)}
                               >
@@ -506,7 +381,7 @@ const FileRightBar = ({
                 <div style={{height: 4}}></div>
                 {fileTree.files.map(file => (
                   <StyledFileItem key={file.id}
-                    className={classNames({ "sidebar-item-active": selectedSidebarItem === file.id } )}
+                    className={classNames({ "sidebar-item-active": selectedSidebarItem && selectedSidebarItem === file.id } )}
                     onClick={() => handleFileClick(file.id, true)}
                   >
                     <div className="text-body d-flex align-items-center file-card-item" onContextMenu={(e) => displayMenu(e, file.id, FILE_MENU_ID, true)}>
@@ -520,7 +395,7 @@ const FileRightBar = ({
             </div>
 
             {/* Upgrade Prompt Box */}
-            <div className="mt-auto">
+            {/* <div className="mt-auto">
               <UncontrolledAlert color="success" className="px-3 mb-0 alert-dismissible">
                 <div className="mb-3">
                   <i className="bx bxs-folder-open h1 text-success"></i>
@@ -539,7 +414,7 @@ const FileRightBar = ({
                   </div>
                 </div>
               </UncontrolledAlert>
-            </div>
+            </div> */}
           </div>
         </CardBody>
       </Card>
@@ -547,7 +422,7 @@ const FileRightBar = ({
   )
 }
 
-export default FileRightBar
+export default FileLeftBar
 
 /* <li>
   <Link to="#" className="text-body d-flex align-items-center">

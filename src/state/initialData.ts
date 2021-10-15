@@ -11,6 +11,7 @@ export interface File {
   id: string
   name: string
   data: FileData
+  isPinned?: boolean
 }
 export interface FileData {
   url?: string,
@@ -42,40 +43,41 @@ export const initialFileTree: Folder = {
     {
       id: nanoid(),
       name: 'first folder',
-      folders: [
-        {
-          id: nanoid(),
-          name: 'A-folder',
-          folders: [
-            {
-              id: nanoid(),
-              name: "nested folder-Aa",
-              folders: [],
-              files: []
-            }
-          ],
-          files: [
-            {
-              id: nanoid(),
-              name: 'nested file-A',
-              data: {
-                filetype: "png",
-                size: 128,
-                url: "https://google.com",
-              }
-            },
-            {
-              id: nanoid(),
-              name: 'nested file-B',
-              data: {
-                filetype: "jpeg",
-                size: 512,
-                url: "https://github.com"
-              }
-            }
-          ]
-        }
-      ],
+      folders: [],
+      // folders: [
+      //   {
+      //     id: nanoid(),
+      //     name: 'A-folder',
+      //     folders: [
+      //       {
+      //         id: nanoid(),
+      //         name: "nested folder-Aa",
+      //         folders: [],
+      //         files: []
+      //       }
+      //     ],
+      //     files: [
+      //       {
+      //         id: nanoid(),
+      //         name: 'nested file-A',
+      //         data: {
+      //           filetype: "png",
+      //           size: 128,
+      //           url: "https://google.com",
+      //         }
+      //       },
+      //       {
+      //         id: nanoid(),
+      //         name: 'nested file-B',
+      //         data: {
+      //           filetype: "jpeg",
+      //           size: 512,
+      //           url: "https://github.com"
+      //         }
+      //       }
+      //     ]
+      //   }
+      // ],
       files: [
         {
           id: nanoid(),

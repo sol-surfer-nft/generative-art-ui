@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { fileBrowserState, fileTreeSelector, rootFoldersSelector, fileTreeState } from '../../state/filesystem'
+import { fileBrowserState, fileTreeSelector, rootFoldersSelector, fileTreeState, activeIdSelector } from '../../state/filesystem'
 import {
   Card,
   CardBody,
@@ -17,6 +17,8 @@ import {
 } from "reactstrap"
 import { useContextMenu } from "react-contexify";
 import classNames from "classnames"
+import { ModalType } from "./index"
+import { Folder, File } from "state/initialData"
 
 const StyledFolderCard = styled(Card)`
   cursor: pointer;
@@ -62,18 +64,36 @@ const StyledPathName = styled.div`
 const FOLDER_MENU_ID = "folder-menu-id"
 const FILE_MENU_ID = "file-menu-id"
 
-let timer;
+let timer: any;
+
+interface FileListProps {
+  modal: any
+  toggleModal: (type: ModalType, itemId?: null | string) => void
+  openFile: (id: string) => void
+  openFolder: (name: string) => void
+  editFile: (id: string) => void
+  removeFile: (id: string) => void
+  removeFolder: (id: string) => void
+}
+
+const MAX_FOLDER_DEPTH = 2
 
 const FileList = ({
   modal,
-  toggleModal
-}) => {
+  toggleModal,
+  openFile,
+  openFolder,
+  editFile,
+  removeFile,
+  removeFolder
+}: FileListProps) => {
   // const [folders, setFolders] = useRecoilState(foldersState)
   const [fileBrowser, setFileBrowser] = useRecoilState(fileBrowserState)
   // const files = useRecoilValue(filesState)
   const currentFileTree = useRecoilValue(fileTreeSelector)
   const [fileTree, setFileTree] = useRecoilState(fileTreeState)
   const [folders, setFolders] = useRecoilState(rootFoldersSelector)
+  const [activeId, setActiveId] = useRecoilState(activeIdSelector)
   
   const { show } = useContextMenu();
 
@@ -98,9 +118,9 @@ const FileList = ({
   //   }
   // }
 
-  const handleSearchChange = (e) => setFileSearch(e.target.value)
+  const handleSearchChange = (e: any) => setFileSearch(e.target.value)
 
-  const onFileCardClick = (fileId, fileName, detail) => {
+  const onFileCardClick = (fileId: string, fileName: string, detail: number) => {
     clearTimeout(timer);
     console.log('clicked file card with id:', fileId)
     setSelectedItem(fileId)
@@ -109,12 +129,16 @@ const FileList = ({
       timer = setTimeout(() => null, 200)
     }
     else if(detail == 2) {
-      onDoubleClick(fileId, fileName)
+      onDoubleClickFile(fileId, fileName)
     }
     // Open modal? Open containing files?
   }
 
-  const onFolderCardClick = (folderId, folderName, detail) => {
+  const onDoubleClickFile = (fileId: string, fileName: string) => {
+    console.log('double clicked file card with id:', fileId)
+  }
+
+  const onFolderCardClick = (folderId: string, folderName: string, detail: number) => {
     clearTimeout(timer);
     console.log('clicked folder card with id:', folderId)
     setSelectedItem(folderId)
@@ -128,36 +152,27 @@ const FileList = ({
     // Open modal? Open containing files?
   }
 
-  const onDoubleClick = (id, name) => {
+  const onDoubleClick = (id: string, name: string) => {
+    console.log(fileBrowser?.path)
     // add extension to path (or derive full path)
-    addToFilePath(name)
+    // add to file path if less than max folder depth
+    if(!fileBrowser?.path || fileBrowser?.path.split('/').length <= MAX_FOLDER_DEPTH) {
+      addToFilePath(name)
+    }
+    else {
+      console.log('cannot add to path. max depth reached')
+    }
   }
 
-  const removeFolder = folderId => {
-    setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId))
-  }
-
-  function displayMenu(e, id, MENU_ID = FILE_MENU_ID){
+  function displayMenu(e: any, id: string, MENU_ID = FILE_MENU_ID){
     // console.log('display menu:', e, 'for folder with id:', id)
     // put whatever custom logic you need
     // you can even decide to not display the Menu
     show(e, { id: MENU_ID, props: { id } });
   }
 
-  const openFile = (fileId) => {
-    console.log('openFile not implemented yet')
-  }
-
-  const editFile = (fileId) => {
-    console.log('editFile not implemented yet')
-  }
-
-  const renameFile = (fileId) => {
-    console.log('renameFile not implemented yet')
-    toggleModal("rename-file")
-  }
-
-  const addToFilePath = (extension) => {
+  const addToFilePath = (extension: string) => {
+    if(!extension) return;
     if(extension.includes("/")) {
       console.log('error: extension includes "/"')
       return;
@@ -174,7 +189,15 @@ const FileList = ({
     setFileSearch("")
   }
 
-  const handlePathClick = pathname => {
+  const navigateHomeFileBrowser = () => {
+    setFileBrowser(prev => ({
+      ...prev,
+      path: "",
+      folder: true
+    }))
+  }
+
+  const handlePathClick = (pathname: string) => {
     // set path state to the path specified (folder)
     let pathArray = fileBrowser.path.split("/")
     let foundPathIndex = pathArray.indexOf(pathname)
@@ -187,22 +210,36 @@ const FileList = ({
     setFileBrowser(prevBrowser => ({
       ...prevBrowser,
       folder: true, // unless file?
-      path: newPath
+      path: newPath || ""
     }))
+  }
+
+  const handleRenameFolder = (id: string) => {
+    toggleModal("rename-folder", id)
+  }
+
+  const handleRenameFile = (id: string) => {
+    console.log('renaming file')
+    toggleModal("rename-file", id)
+  }
+
+  const previewFile = (id: string) => {
+    console.log('preview file not ready yet')
   }
 
   return (
     <React.Fragment>
-
       {/* Files List Header */}
       <div>
         <Row className="mb-3">
           <Col xl={3} sm={6}>
             <StyledPathName className="mt-2">
-              <h5>{fileBrowser.path.split("/").map(pathname => (
+              <h5>
+                {fileBrowser?.path?.split("/").length > 0 && <span onClick={navigateHomeFileBrowser} className="path-item">Home</span>}
+                {fileBrowser?.path?.split("/").map(pathname => (
                 <>
-                <span key={pathname} onClick={() => handlePathClick(pathname)} className="path-item">{pathname}</span>
-                <span>/</span>
+                  <span key={pathname} onClick={() => handlePathClick(pathname)} className="path-item">{pathname}</span>
+                  <span>/</span>
                 </>
               ))}</h5>
             </StyledPathName>
@@ -253,12 +290,12 @@ const FileList = ({
       {/* Files Grid */}
       <div>
         <Row>
-          {fileSearch && folders.filter(folder => folder.name.toLowerCase().includes(fileSearch.toLowerCase())).map(folder => (
+          {fileSearch && folders.filter((folder: Folder) => folder.name.toLowerCase().includes(fileSearch.toLowerCase())).map((folder: Folder) => (
             <Col xl={4} sm={6} key={folder.id}>
               <StyledFolderCard
                 className={classNames("shadow-none border", { "active-item-card": selectedItem === folder.id })}
-                onClick={(e) => onFolderCardClick(folder.id, folder.name, e.detail)}
-                onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
+                onClick={(e: any) => onFolderCardClick(folder.id, folder.name, e.detail)}
+                onContextMenu={(e: any) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="folder-card-inner">
@@ -272,13 +309,13 @@ const FileList = ({
                         </DropdownToggle>
 
                         <DropdownMenu>
-                          <DropdownItem className="dropdown-item" onClick={() => openFile(folder.id)}>
+                          <DropdownItem className="dropdown-item" onClick={() => openFolder(folder.name)}>
                             Open
                           </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
+                          {/* <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
                             Edit
-                          </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => renameFile(folder.id)}>
+                          </DropdownItem> */}
+                          <DropdownItem className="dropdown-item" onClick={() => handleRenameFolder(folder.id)}>
                             Rename
                           </DropdownItem>
                           <div className="dropdown-divider"></div>
@@ -305,7 +342,7 @@ const FileList = ({
                         </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{folder.files[0]?.gb || "2"}GB</p>
+                        <p className="text-muted mb-0">{folder.files[0]?.data.size || "2"}GB</p>
                       </div>
                     </div>
                   </div>
@@ -372,18 +409,18 @@ const FileList = ({
               </StyledFileCard>
             </Col>
           ))} */}
-          {!currentFileTree.folders && !currentFileTree.files && (
+          {((!currentFileTree.folders && !currentFileTree.files) || (currentFileTree.folders.length === 0 && currentFileTree.files.length === 0)) && (
             <Card style={{padding:20}}>
               <p style={{textAlign:'center', marginBottom: 0}}>None of your files or folders were found</p>
             </Card>
           )}
 
-          {!fileSearch && currentFileTree.folders?.map(folder => (
+          {!fileSearch && currentFileTree.folders?.map((folder: Folder) => (
             <Col xl={4} sm={6} key={folder.id}>
               <StyledFolderCard
                 className={classNames("shadow-none border", { "active-item-card": selectedItem === folder.id })}
-                onClick={(e) => onFolderCardClick(folder.id, folder.name, e.detail)}
-                onContextMenu={(e) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
+                onClick={(e: any) => onFolderCardClick(folder.id, folder.name, e.detail)}
+                onContextMenu={(e: any) => displayMenu(e, folder.id, FOLDER_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">
@@ -397,13 +434,13 @@ const FileList = ({
                         </DropdownToggle>
 
                         <DropdownMenu>
-                          <DropdownItem className="dropdown-item" onClick={() => openFile(folder.id)}>
+                          <DropdownItem className="dropdown-item" onClick={() => openFolder(folder.name)}>
                             Open
                           </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
+                          {/* <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
                             Edit
-                          </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => renameFile(folder.id)}>
+                          </DropdownItem> */}
+                          <DropdownItem className="dropdown-item" onClick={() => handleRenameFolder(folder.id)}>
                             Rename
                           </DropdownItem>
                           <div className="dropdown-divider"></div>
@@ -430,7 +467,7 @@ const FileList = ({
                         </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{folder.files[0]?.gb || "2"}GB</p>
+                        <p className="text-muted mb-0">{folder.files[0]?.data.size || "2"}GB</p>
                       </div>
                     </div>
                   </div>
@@ -439,12 +476,12 @@ const FileList = ({
             </Col>
           ))}
 
-          {!fileSearch && currentFileTree.files?.map(file => (
+          {!fileSearch && currentFileTree.files?.map((file: File) => (
             <Col xl={4} sm={6} key={file.id}>
               <StyledFileCard
                 className={classNames("shadow-none border", { "active-item-card": selectedItem === file.id })}
-                onClick={(e) => onFileCardClick(file.id, file.name, e.detail)}
-                onContextMenu={(e) => displayMenu(e, file.id, FILE_MENU_ID)}
+                onClick={(e: any) => onFileCardClick(file.id, file.name, e.detail)}
+                onContextMenu={(e: any) => displayMenu(e, file.id, FILE_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">
@@ -458,17 +495,18 @@ const FileList = ({
                         </DropdownToggle>
 
                         <DropdownMenu>
-                          <DropdownItem className="dropdown-item" onClick={() => openFile(file.id)}>
-                            Open
+                          {/* Open Can Preview the Image */}
+                          <DropdownItem className="dropdown-item" onClick={() => previewFile(file.id)}>
+                            Preview
                           </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => editFile(file.id)}>
+                          {/* <DropdownItem className="dropdown-item" onClick={() => editFile(file.id)}>
                             Edit
-                          </DropdownItem>
-                          <DropdownItem className="dropdown-item" onClick={() => renameFile(file.id)}>
+                          </DropdownItem> */}
+                          <DropdownItem className="dropdown-item" onClick={() => handleRenameFile(file.id)}>
                             Rename
                           </DropdownItem>
                           <div className="dropdown-divider"></div>
-                          <DropdownItem className="dropdown-item" onClick={() => removeFolder(file.id)}>
+                          <DropdownItem className="dropdown-item" onClick={() => removeFile(file.id)}>
                             Remove
                           </DropdownItem>
                         </DropdownMenu>
@@ -486,12 +524,12 @@ const FileList = ({
                             {file.name}
                           </Link>
                         </h5>
-                        <p className="text-muted text-truncate mb-0">
+                        {/* <p className="text-muted text-truncate mb-0">
                           {file.file} Files
-                        </p>
+                        </p> */}
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{file.Gb}GB</p>
+                        {file.data?.size && <p className="text-muted mb-0">{file.data.size}GB</p>}
                       </div>
                     </div>
                   </div>

@@ -6,7 +6,19 @@ export const fileBrowserState = atom({
   key: "fileBrowserState",
   default: {
     path: "",
-    folder: true
+    folder: true,
+    activeFolderId: "", // "" is root
+  }
+})
+
+export const activeIdSelector = selector({
+  key: "activeIdState",
+  get: ({ get }) => {
+    const { activeFolderId } = get(fileBrowserState)
+    return activeFolderId
+  },
+  set: ({ set }, activeId) => {
+    set(fileBrowserState, prevFileBrowser => ({ ...prevFileBrowser, activeFolderId: activeId }))
   }
 })
 
@@ -95,7 +107,9 @@ export const fileTreeSelector = selector({
     let { path, folder } = get(fileBrowserState);
     let fileTree = get(fileTreeState)
 
-    if(!path.includes('/')) {
+    console.log('path:', path)
+
+    if(!path || !path.includes('/')) {
       // get from root
       return fileTree;
     }
