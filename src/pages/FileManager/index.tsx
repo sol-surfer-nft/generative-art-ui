@@ -34,6 +34,7 @@ const FileManager = () => {
   const [modal, setModal] = useState(false)
   const [modalType, setModalType] = useState(defaultModalType) // "add-file", "add-folder", "rename-file", "rename-folder"
   const [activeId, setActiveId] = useRecoilState(activeIdSelector)
+  const [parentFolder, setParentFolder] = useState<string | undefined>(undefined) // for adding files to folders
 
   useEffect(() => {
     return () => reset()
@@ -56,7 +57,7 @@ const FileManager = () => {
     setModalType(defaultModalType)
   }
 
-  const onFileModalSubmit = async (filename: string, type: ModalType, parentFolderId = undefined) => {
+  const onFileModalSubmit = async (filename: string, type: ModalType, parentFolderId?: string) => {
     return new Promise((resolve, reject) => {
       // Mock response. Can try/catch here too
       setTimeout(() => {
@@ -65,6 +66,9 @@ const FileManager = () => {
         if(!activeId && type === "rename-file") return reject("Error: The file you identified was not found")
         console.log('type:', type)
         if(type === "add-file") {
+          if(parentFolder)
+            parentFolderId = parentFolder
+          else if(!parentFolderId) parentFolderId = undefined;
           addFile(filename, parentFolderId)
           // setRootFiles(prevRootFiles => ([...prevRootFiles, {
           //   id: nanoid(),
@@ -177,7 +181,8 @@ const FileManager = () => {
     }
   }
 
-  const addFile = (filename: string, folderId = undefined) => {
+  const addFile = (filename: string, folderId?: string) => {
+    console.log('folder id:', folderId)
     // TODO: swap to modal, then proceed with logic and the final name
     // Note: Might be time to refactor this logic code to its own service
 
@@ -290,7 +295,7 @@ const FileManager = () => {
     }))
   }
 
-  const renameFile = (fileId: string, newName: string, parentFolderId = undefined) => {
+  const renameFile = (fileId: string, newName: string, parentFolderId?: string) => {
     if(!parentFolderId) {
       setFileTree(prevTree => ({
         ...prevTree,
@@ -360,6 +365,16 @@ const FileManager = () => {
     }))
   }
 
+  const addFileToFolder = (folderId: string) => {
+    if(!folderId) return;
+    console.log('folder id:', folderId)
+    setParentFolder(folderId)
+
+    // show modal and wait
+    setModalType("add-file")
+    setModal(true);
+  }
+
   const reset = () => {
     setActiveId(null)
     setModal(false)
@@ -375,6 +390,7 @@ const FileManager = () => {
             <FileLeftBar
               modal={modal}
               toggleModal={toggleModal}
+              addFileToFolder={addFileToFolder}
               openFile={openFile}
               openFolder={openFolder}
               editFile={editFile}
@@ -387,6 +403,7 @@ const FileManager = () => {
                 <FileList
                   modal={modal}
                   toggleModal={toggleModal}
+                  addFileToFolder={addFileToFolder}
                   openFile={openFile}
                   openFolder={openFolder}
                   editFile={editFile}

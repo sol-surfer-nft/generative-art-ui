@@ -69,6 +69,7 @@ let timer: any;
 interface FileListProps {
   modal: any
   toggleModal: (type: ModalType, itemId?: null | string) => void
+  addFileToFolder: (folderId: string) => void
   openFile: (id: string) => void
   openFolder: (name: string) => void
   editFile: (id: string) => void
@@ -81,6 +82,7 @@ const MAX_FOLDER_DEPTH = 2
 const FileList = ({
   modal,
   toggleModal,
+  addFileToFolder,
   openFile,
   openFolder,
   editFile,
@@ -342,7 +344,7 @@ const FileList = ({
                         </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{folder.files[0]?.data.size || "2"}GB</p>
+                        <p className="text-muted mb-0">{folder.files[0]?.data?.size || "2"}GB</p>
                       </div>
                     </div>
                   </div>
@@ -437,9 +439,9 @@ const FileList = ({
                           <DropdownItem className="dropdown-item" onClick={() => openFolder(folder.name)}>
                             Open
                           </DropdownItem>
-                          {/* <DropdownItem className="dropdown-item" onClick={() => editFile(folder.id)}>
-                            Edit
-                          </DropdownItem> */}
+                          <DropdownItem className="dropdown-item" onClick={() => addFileToFolder(folder.id)}>
+                            Add File
+                          </DropdownItem>
                           <DropdownItem className="dropdown-item" onClick={() => handleRenameFolder(folder.id)}>
                             Rename
                           </DropdownItem>

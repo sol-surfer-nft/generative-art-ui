@@ -86,6 +86,7 @@ const MAX_FILES = 50
 interface FileLeftBarProps {
   modal: any
   toggleModal: (type: ModalType, itemId?: null | string) => void
+  addFileToFolder: (folderId: string) => void
   openFile: (id: string) => void
   openFolder: (name: string) => void
   editFile: (id: string) => void
@@ -97,6 +98,7 @@ interface FileLeftBarProps {
 const FileLeftBar = ({
   modal,
   toggleModal,
+  addFileToFolder,
   openFile,
   openFolder,
   editFile,
@@ -150,7 +152,7 @@ const FileLeftBar = ({
         break;
       case "add-file":
         // addFile(props.id);
-        toggleModal("add-file", props.id); // selectedSidebarItem
+        addFileToFolder(props.id); // selectedSidebarItem
         break;
       case "rename":
         toggleModal("rename-folder", props.id)
@@ -244,12 +246,12 @@ const FileLeftBar = ({
       <Menu id={FILE_MENU_ID}>
         {/* @ts-ignore */}
         <Item id="open" onClick={handleFileItemClick}>
-          Open
+          Preview
         </Item>
         {/* @ts-ignore */}
-        <Item id="edit" onClick={handleFileItemClick}>
+        {/* <Item id="edit" onClick={handleFileItemClick}>
           Edit
-        </Item>
+        </Item> */}
         {/* @ts-ignore */}
         <Item id="rename" onClick={handleFileItemClick}>
           Rename
