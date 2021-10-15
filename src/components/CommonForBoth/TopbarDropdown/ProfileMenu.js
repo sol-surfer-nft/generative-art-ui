@@ -12,7 +12,6 @@ import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Identicon } from "../../Identicon"
 import { useWallet } from "@solana/wallet-adapter-react"
-import { getCurrentUser, logoutUser } from "../../../utils/authentication"
 import {
   WalletDisconnectButton,
   WalletMultiButton,
@@ -67,7 +66,13 @@ const ProfileMenu = props => {
     sendTransaction,
     signAllTransactions,
     publicKey,
+    disconnect
   } = walletContext
+
+  const disconnectUser = () => {
+    console.log('Logging you out')
+    disconnect();
+  }
 
   return (
     // Connect
@@ -111,7 +116,7 @@ const ProfileMenu = props => {
                 {t("Settings")}
               </DropdownItem>
               <div className="dropdown-divider" />
-              <DropdownItem className="dropdown-item" onClick={logoutUser}>
+              <DropdownItem className="dropdown-item" onClick={disconnectUser}>
                 <i className="bx bx-power-off font-size-16 align-middle me-1 text-danger" />
                 <span>{t("Disconnect")}</span>
               </DropdownItem>
