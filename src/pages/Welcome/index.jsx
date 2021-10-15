@@ -1,5 +1,7 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
+import { useHistory, Redirect } from 'react-router-dom'
+import { isAuthState } from '../../state/atoms'
 import styled from 'styled-components'
 import MetaTags from 'react-meta-tags'
 import { Container, Card } from 'reactstrap'
@@ -30,16 +32,14 @@ const StyledWelcome = styled.div`
 `
 
 const Welcome = () => {
-  const [isAuth, setIsAuth] = React.useState(false)
-  const { connected, wallet } = useWallet()
-  const history = useHistory()
+  const isAuth = useRecoilValue(isAuthState)
+  // const { connected, wallet } = useWallet()
+  // const history = useHistory()
 
-  React.useEffect(() => {
-    if(connected && wallet) {
-      history.push('/dashboard')
-    }
-  }, [connected, wallet])
 
+  if(isAuth) {
+    return <Redirect to="/dashboard" />
+  }
   return (
     <>
       <MetaTags>

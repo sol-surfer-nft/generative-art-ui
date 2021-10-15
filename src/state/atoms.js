@@ -15,3 +15,8 @@ export const modalState = atom({
     name: "" // unique
   }
 })
+
+export const isAuthState = atom({
+  key: "auth-state",
+  default: false
+})

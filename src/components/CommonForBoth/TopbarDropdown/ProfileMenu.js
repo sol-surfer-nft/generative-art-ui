@@ -57,7 +57,7 @@ const ProfileMenu = props => {
   const [username, setusername] = useState("User")
 
   useEffect(() => {
-    console.log("wallet info:", walletContext)
+    // console.log("wallet info:", walletContext)
   }, [walletContext])
 
   const {

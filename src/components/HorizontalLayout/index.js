@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { withRouter } from "react-router-dom"
 import PropTypes from "prop-types"
+import { isAuthState } from "../../state/atoms"
 
 //actions
 import {
@@ -20,6 +22,7 @@ import Rightbar from "../CommonForBoth/RightSidebar"
 import { useWallet } from '@solana/wallet-adapter-react';
 
 const Layout = (props) => {
+  const isAuth = useRecoilValue(isAuthState);
   const { connected } = useWallet()
 
   const dispatch = useDispatch()
@@ -108,11 +111,11 @@ const Layout = (props) => {
           isMenuOpened={isMenuOpened}
           openLeftMenuCallBack={openMenu}
         />
-        {connected && (
+        {isAuth && (
           <Navbar menuOpen={isMenuOpened} />
         )}
         <div className="main-content">{props.children}</div>
-        {connected && <Footer />}
+        {isAuth && <Footer />}
       </div>
 
       {showRightSidebar ? <Rightbar /> : null}

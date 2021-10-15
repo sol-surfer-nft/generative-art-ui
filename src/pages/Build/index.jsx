@@ -182,111 +182,111 @@ const BuildPage = props => {
 
   return (
     <React.Fragment>
-        <div className="page-content">
-          <MetaTags>
-            <title>Build | SolSurfer Generative Art Platform</title>
-          </MetaTags>
-          <StyledContainer fluid>
+      <div className="page-content">
+        <MetaTags>
+          <title>Build | SolSurfer Generative Art Platform</title>
+        </MetaTags>
+        <StyledContainer fluid>
 
-            <header className="page-header">
-              <h4 className="page-header-title">Build</h4>
-              {!formActive && (
-                <button
-                  type="button"
-                  className="btn btn-info block page-header-button"
-                  onClick={toggleAddAttribute}
-                  >
-                  <i className="bx bx-plus font-size-16 align-middle me-2"></i>{" "}
-                  Add Attribute
-                </button>
-              )}
-            </header>
+          <header className="page-header">
+            <h4 className="page-header-title">Build</h4>
+            {!formActive && (
+              <button
+                type="button"
+                className="btn btn-info block page-header-button"
+                onClick={toggleAddAttribute}
+                >
+                <i className="bx bx-plus font-size-16 align-middle me-2"></i>{" "}
+                Add Attribute
+              </button>
+            )}
+          </header>
 
-            {formErrors && (
-              <div className="error-container">
-                <p className="error-text">{formErrors.toString()}</p>
+          {formErrors && (
+            <div className="error-container">
+              <p className="error-text">{formErrors.toString()}</p>
+            </div>
+          )}
+
+          {/* Add Attribute Form */}
+          {/* Add Attribute Icon Button */}
+          {formActive && (
+            <Form className="add-attribute row row-cols-lg-auto g-3 align-items-center" onKeyDown={e => handleFormKeyDown(e.keyCode)} onSubmit={onFormSubmit}>
+              <Col xs={12}>
+                <label className="visually-hidden" htmlFor="attributeNameId">Username</label>
+                <Input type="text" autoFocus className="form-control" value={formData.attributeName} onChange={handleChange} id="attributeNameId" placeholder="Name" name="attributeName" />
+              </Col>
+
+              <Col xs={12}>
+                <label className="visually-hidden" htmlFor="attributeRarityId">Preference</label>
+                <Input type="number" className="rarity-input" value={formData.attributeRarity} onChange={handleChange} name="attributeRarity" id="attributeRarityId" />
+              </Col>
+
+              <Col xs={12}>
+                <button type="submit" disabled={formLoading} className="btn btn-primary add-attribute-button w-md">Add</button>
+                <button type="button" disabled={formLoading} onClick={handleFormClickAway} className="btn btn-light add-attribute-button w-md">Cancel</button>
+              </Col>
+            </Form>
+          )}
+
+          <h6 style={{fontWeight: "bold", marginBottom: 8}}>Attributes</h6>
+
+          <ul className="attribute-items-list">
+            {/* Header List Item */}
+            <li className="attribute-items-list-header">
+              <p className="attribute-item-text" style={{fontWeight:"bold", paddingLeft:2}}>#</p>
+              <div className="attribute-item-body">
+                <p className="attribute-item-text" style={{fontWeight:"bold"}}>Name</p>
               </div>
-            )}
-
-            {/* Add Attribute Form */}
-            {/* Add Attribute Icon Button */}
-            {formActive && (
-              <Form className="add-attribute row row-cols-lg-auto g-3 align-items-center" onKeyDown={e => handleFormKeyDown(e.keyCode)} onSubmit={onFormSubmit}>
-                <Col xs={12}>
-                  <label className="visually-hidden" htmlFor="attributeNameId">Username</label>
-                  <Input type="text" autoFocus className="form-control" value={formData.attributeName} onChange={handleChange} id="attributeNameId" placeholder="Name" name="attributeName" />
-                </Col>
-
-                <Col xs={12}>
-                  <label className="visually-hidden" htmlFor="attributeRarityId">Preference</label>
-                  <Input type="number" className="rarity-input" value={formData.attributeRarity} onChange={handleChange} name="attributeRarity" id="attributeRarityId" />
-                </Col>
-
-                <Col xs={12}>
-                  <button type="submit" disabled={formLoading} className="btn btn-primary add-attribute-button w-md">Add</button>
-                  <button type="button" disabled={formLoading} onClick={handleFormClickAway} className="btn btn-light add-attribute-button w-md">Cancel</button>
-                </Col>
-              </Form>
-            )}
-
-            <h6 style={{fontWeight: "bold", marginBottom: 8}}>Attributes</h6>
-
-            <ul className="attribute-items-list">
-              {/* Header List Item */}
-              <li className="attribute-items-list-header">
-                <p className="attribute-item-text" style={{fontWeight:"bold", paddingLeft:2}}>#</p>
-                <div className="attribute-item-body">
-                  <p className="attribute-item-text" style={{fontWeight:"bold"}}>Name</p>
-                </div>
-                <p className="attribute-item-text" style={{fontWeight:"bold"}}>Traits</p>
-              </li>
-              {attributes.map((attribute, index) => (
-                <StyledAttribute key={attribute.id}>
-                  <Card>
-                    <div className="attribute-item" onClick={() => setOpen(attribute.id)}>
-                      <p className="attribute-item-text" style={{fontWeight:600}}>{index}.{" "}</p>
-                      <div className="attribute-item-body">
-                        <p className="attribute-item-text">{attribute.name}</p>
-                      </div>
-                      <p className="attribute-item-text">{attribute.traits.length}</p>
+              <p className="attribute-item-text" style={{fontWeight:"bold"}}>Traits</p>
+            </li>
+            {attributes.map((attribute, index) => (
+              <StyledAttribute key={attribute.id}>
+                <Card>
+                  <div className="attribute-item" onClick={() => setOpen(attribute.id)}>
+                    <p className="attribute-item-text" style={{fontWeight:600}}>{index}.{" "}</p>
+                    <div className="attribute-item-body">
+                      <p className="attribute-item-text">{attribute.name}</p>
                     </div>
-                  </Card>
-                  <Collapse isOpen={openAttributes.includes(attribute.id)}>
-                    <h6 className="attributes-item-header" style={{fontWeight:"bold",marginBottom:2,marginTop:5,marginLeft:40}}>Traits:</h6>
-                    {attribute.traits.map((trait, index) => (
-                      <div className="attribute-item-container" key={trait.id}>
-                        <div className="attribute-index">
-                          <p style={{marginBottom:0, fontWeight: "bold"}}>{index}</p>
-                        </div>
-                        <div className="attribute-trait-item">
-                          <p className="attribute-trait-text">Name: {trait.name}</p>
-                          {trait.desc && <p className="attribute-trait-text">Desc: {trait.desc}</p>}
-                          <p className="attribute-trait-text">Rarity: {trait.rarity}</p>
-                          <p className="attribute-trait-text">File Type: {trait.fileType}</p>
-                          <p className="attribute-trait-text">Url: {trait.url}</p>
-                        </div>
+                    <p className="attribute-item-text">{attribute.traits.length}</p>
+                  </div>
+                </Card>
+                <Collapse isOpen={openAttributes.includes(attribute.id)}>
+                  <h6 className="attributes-item-header" style={{fontWeight:"bold",marginBottom:2,marginTop:5,marginLeft:40}}>Traits:</h6>
+                  {attribute.traits.map((trait, index) => (
+                    <div className="attribute-item-container" key={trait.id}>
+                      <div className="attribute-index">
+                        <p style={{marginBottom:0, fontWeight: "bold"}}>{index}</p>
                       </div>
-                    ))}
-                    {attribute.traits.length === 0 && (
-                      <div className="attribute-item-container">
-                        <p style={{marginLeft: 75, marginTop: 10}}>No Traits Found</p>
+                      <div className="attribute-trait-item">
+                        <p className="attribute-trait-text">Name: {trait.name}</p>
+                        {trait.desc && <p className="attribute-trait-text">Desc: {trait.desc}</p>}
+                        <p className="attribute-trait-text">Rarity: {trait.rarity}</p>
+                        <p className="attribute-trait-text">File Type: {trait.fileType}</p>
+                        <p className="attribute-trait-text">Url: {trait.url}</p>
                       </div>
-                    )}
-                  </Collapse>
-                </StyledAttribute>
-              ))}
-            </ul>
+                    </div>
+                  ))}
+                  {attribute.traits.length === 0 && (
+                    <div className="attribute-item-container">
+                      <p style={{marginLeft: 75, marginTop: 10}}>No Traits Found</p>
+                    </div>
+                  )}
+                </Collapse>
+              </StyledAttribute>
+            ))}
+          </ul>
 
-            {/* <h4 style={{marginTop: 80}}>Order</h4> */}
+          {/* <h4 style={{marginTop: 80}}>Order</h4> */}
 
-            {/* Attributes List */}
-            <DragDropTable />
+          {/* Attributes List */}
+          <DragDropTable />
 
-            {/* Second Option */}
-            <EditableTable />
-          </StyledContainer>
-        </div>
-      </React.Fragment>
+          {/* Second Option */}
+          <EditableTable />
+        </StyledContainer>
+      </div>
+    </React.Fragment>
   )
 }
 
