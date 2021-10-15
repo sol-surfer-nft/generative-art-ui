@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { useRecoilState } from 'recoil'
-import { foldersState, filesState, rootFilesState, modalState } from '../../state/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { fileTreeState, fileTreeSelector, fileBrowserState, rootFoldersSelector } from '../../state/filesystem'
 import styled from 'styled-components'
 import {
   Card,
@@ -88,24 +88,57 @@ const FileRightBar = ({
 }) => {
   const [openFolders, setOpenFolders] = useState([])
 
-  const [folders, setFolders] = useRecoilState(foldersState)
-  const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
-  const [files, setFiles] = useRecoilState(filesState)
+  // const [folders, setFolders] = useRecoilState(foldersState)
+  // const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
+  // const [files, setFiles] = useRecoilState(filesState)
+  const [fileTree, setFileTree] = useRecoilState(fileTreeState)
+  const [fileBrowser, setFileBrowser] = useRecoilState(fileBrowserState)
+  const currentFileTree = useRecoilValue(fileTreeSelector)
+
+  const [folders, setFolders] = useRecoilState(rootFoldersSelector)
 
   const [selectedSidebarItem, setSelectedSidebarItem] = useState("")
 
   const { show } = useContextMenu();
 
-  const addFolder = () => {
+  const addFolder = (folderId, name = undefined) => {
     // toggleModal("add-folder")
-    setFolders([
-      ...folders,
-      {
-        id: nanoid(),
-        name: "Untitled",
-        files: []
+    // add to root of fileTree
+    if(!folderId || folderId === fileTree.id)
+      setFileTree(prevTree => ([
+        ...prevTree,
+        {
+          id: nanoid(),
+          name: name || ("Untitled-" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9)),
+          files: [],
+          folders: []
+        }
+      ]))
+    else {
+      // Add folder to relevant place
+      const getNextFolder = (folder, nextIndex) => {
+        let found2 = folder.folders.find(folder => folder.id === folderId)
+        if(found2) {
+          console.log('found!', found2)
+          return found2
+        }
+        else if (nextIndex + 1 < folder.folders.length) {
+          console.log('returning next folder')
+          getNextFolder(folder.folders[nextIndex], nextIndex + 1)
+        }
+        else {
+          console.log('nothing found. returning blank')
+          return;
+        }
       }
-    ])
+      // see if is in root
+      let foundFolder = fileTree.folders.find(folder => folder.id === folderId)
+      if(!foundFolder) {
+        // is not in root. run recursively
+        let nextFolder = getNextFolder(fileTree.folders[0], 0)
+        console.log('next folder:', nextFolder)
+      }
+    }
   }
 
   const addFile = (folderId = undefined) => {
@@ -123,13 +156,13 @@ const FileRightBar = ({
       // Check if a directory or file is currently active, and get its level
       if(selectedSidebarItem) {
         // check if its a root file
-        let rootFound = rootFiles.find(rootFile => rootFile.id === selectedSidebarItem)
+        let rootFound = fileTree.files.find(rootFile => rootFile.id === selectedSidebarItem)
         if(rootFound) {
           // Add to root level of tree
-          setRootFiles(prevRootFiles => [
-            ...prevRootFiles,
-            newFile
-          ])
+          setFileTree(prevTree => ({
+            ...prevTree,
+            files: [...prevTree.files, newFile]
+          }))
         }
         else {
           // search folders (TODO: optimize by storing helper data in state, along with the active item id. Keep state flattened though)
@@ -163,20 +196,20 @@ const FileRightBar = ({
             }
             else {
               // Add file to root level anyways
-              setRootFiles(prevRootFiles => [
-                ...prevRootFiles,
-                newFile
-              ])
+              setFileTree(prevTree => ({
+                ...prevTree,
+                files: [...prevTree.files, newFile]
+              }))
             }
           }
         }
       }
       else {
         // Add file to root level anyways
-        setRootFiles(prevRootFiles => [
-          ...prevRootFiles,
-          newFile
-        ])
+        setFileTree(prevTree => ({
+          ...prevTree,
+          files: [...prevTree.files, newFile]
+        }))
       }
     }
     else {
@@ -471,7 +504,7 @@ const FileRightBar = ({
                   // </ClickAwayListener>
                 ))}
                 <div style={{height: 4}}></div>
-                {rootFiles.map(file => (
+                {fileTree.files.map(file => (
                   <StyledFileItem key={file.id}
                     className={classNames({ "sidebar-item-active": selectedSidebarItem === file.id } )}
                     onClick={() => handleFileClick(file.id, true)}

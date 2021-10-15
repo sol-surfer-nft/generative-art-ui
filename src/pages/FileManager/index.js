@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Card, CardBody } from "reactstrap"
-import { useRecoilState } from 'recoil'
-import { foldersState, rootFilesState } from '../../state/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { fileBrowserState, fileTreeState, fileTreeSelector } from '../../state/filesystem'
 import { nanoid } from 'nanoid'
 
 //Import Breadcrumb
@@ -19,8 +19,11 @@ const series = [76]
 const defaultModalType = "add-file"
 
 const FileManager = () => {
-  const [folders, setFolders] = useRecoilState(foldersState)
-  const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
+  // const [folders, setFolders] = useRecoilState(foldersState)
+  // const [rootFiles, setRootFiles] = useRecoilState(rootFilesState)
+  const [fileTree, setFileTree] = useRecoilState(fileTreeState)
+  const [fileBrowser, setFileBrowser] = useRecoilState(fileBrowserState)
+  const currentFileTree = useRecoilValue(fileTreeSelector)
 
   const [modal, setModal] = useState(false)
   const [modalType, setModalType] = useState(defaultModalType) // "add-file", "add-folder", "rename-file", "rename-folder"
@@ -120,7 +123,7 @@ const FileManager = () => {
   
   return (
     <React.Fragment>
-      <Breadcrumbs title="Apps" breadcrumbItem="NFT Tool" breadcrumbTitle="NFT Tool (demo)" />
+      <Breadcrumbs title="SolSurfer" breadcrumbItem="Assets" breadcrumbTitle="Asset Manager" />
       <div className="d-xl-flex">
         <div className="w-100">
           <div className="d-md-flex">

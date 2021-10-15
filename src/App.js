@@ -3,21 +3,21 @@ import React, { useState, useEffect, Suspense, lazy } from "react"
 
 import { Switch, BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import { connect } from "react-redux"
-import { filesState } from './state/atoms'
-import { useRecoilState } from 'recoil'
-
-// Authentication related pages
-import Login from "./pages/Authentication/Login"
-import Logout from "./pages/Authentication/Logout"
-import Register from "./pages/Authentication/Register"
-import ForgotPassword from "./pages/Authentication/ForgetPassword"
+// import { useRecoilState } from 'recoil'
+import { WalletConnector } from './web3/WalletConnector'
 
 // User Pages
-import Dashboard from "./pages/Dashboard/index"
+import Dashboard from "./pages/Dashboard"
+import Build from "./pages/Build"
+import FileManager from "./pages/FileManager"
+import Info from "./pages/Info"
+import Preview from "./pages/Preview"
+import Publish from "./pages/Publish"
+import Welcome from './pages/Welcome'
 
 // layouts Format
 import HorizontalLayout from "./components/HorizontalLayout/"
-// import NonAuthLayout from "./components/NonAuthLayout"
+// import { AuthRoute } from './web3/AuthRoute'
 
 // Import scss
 import "./assets/scss/theme.scss"
@@ -26,64 +26,44 @@ import "./assets/scss/theme.scss"
 // import { initFirebaseBackend } from "./helpers/firebase_helper"
 
 import fakeBackend from "./helpers/AuthType/fakeBackend"
+import { useWallet } from '@solana/wallet-adapter-react'
 
-// Activating fake backend
 fakeBackend()
 
-// const firebaseConfig = {
-//   apiKey: process.env.REACT_APP_APIKEY,
-//   authDomain: process.env.REACT_APP_AUTHDOMAIN,
-//   databaseURL: process.env.REACT_APP_DATABASEURL,
-//   projectId: process.env.REACT_APP_PROJECTID,
-//   storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-//   messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
-//   appId: process.env.REACT_APP_APPID,
-//   measurementId: process.env.REACT_APP_MEASUREMENTID,
-// }
-
-// init firebase backend
-// initFirebaseBackend(firebaseConfig)
-
 const App = props => {
-  const [isAuth, setIsAuth] = useState(true); // default to 'True' until Web3 Auth is added
-
-  const files = useRecoilState(filesState)
+  const [isAuth, setIsAuth] = useState(false); // default to 'True' until Web3 Auth is added
+  const { connected, wallet } = useWallet()
 
   useEffect(() => {
-    console.log("files (ui):", files)
-  }, [files])
+    if(connected && wallet) {
+      setIsAuth(true)
+    }
+  }, [connected, wallet])
 
   const Layout = HorizontalLayout
 
   return (
-    <React.Fragment>
+    <WalletConnector>
+        <Layout>
       <Router>
-        <Switch>
-          <Layout>
-            <Suspense fallback={<div className="page-content"><p>Not Found</p></div>}>
-              {/* Public Routes */}
-              <Route exact path="/logout" component={Logout} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/forgot-password" component={ForgotPassword} />
-              <Route exact path="/register" component={Register} />
-
-              {/* Auth Protected Routes */}
-              {isAuth && (
-                <>
-                  <Route exact path={["/", "/dashboard"]} component={Dashboard} />
-                  <Route exact path="/profile" component={lazy(() => import("./pages/Authentication/user-profile"))} />
-                  <Route exact path="/build" component={lazy(() => import("./pages/Build/"))} />
-                  <Route exact path="/preview" component={lazy(() => import("./pages/Preview/"))} />
-                  <Route exact path="/info" component={lazy(() => import("./pages/Info/"))} />
-                  <Route exact path="/publish" component={lazy(() => import("./pages/Publish/"))} />
-                  {/* <Redirect exact from="/" to="/dashboard" /> */}
-                </>
-              )}
-            </Suspense>
-          </Layout>
-        </Switch>
+          {/* <Suspense fallback={<div className="page-content"></div>}> */}
+            <Switch>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+            {/* Public Routes */}
+                
+                {isAuth ? (
+                  <>
+                    <Route exact path={["/", "/dashboard"]} component={Dashboard} />
+                    <Route exact path="/build" component={Build} />
+                    <Route exact path="/preview" component={Preview} />
+                    <Route exact path="/info" component={Info} />
+                    <Route exact path="/publish" component={Publish} />
+                  </>
+                ) : <><Route exact path={["/", "/welcome"]} component={Welcome} /><Redirect to="/welcome" /></>}
+            </Switch>
+          {/* </Suspense> */}
       </Router>
-    </React.Fragment>
+        </Layout>
+    </WalletConnector>
   )
 }
 

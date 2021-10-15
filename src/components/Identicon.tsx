@@ -37,10 +37,10 @@ export const Identicon = (props: IdenticonProps) => {
 };
 
 const StyledIdenticon = styled.div`
-  // display: flex;
-  // height: 1rem;
-  // width: 1rem;
+  display: flex;
+  height: 1rem;
+  width: 1rem;
   border-radius: 1.125rem;
-  // margin: 0.2rem 0.2rem 0.2rem 0.1rem;
+  margin: 0.2rem 0.2rem 0.2rem 0.1rem;
   /* background-color: ${({ theme }) => theme.bg4}; */
 `

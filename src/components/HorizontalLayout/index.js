@@ -17,7 +17,10 @@ import Navbar from "./Navbar"
 import Header from "./Header"
 import Footer from "./Footer"
 import Rightbar from "../CommonForBoth/RightSidebar"
+import { useWallet } from '@solana/wallet-adapter-react';
+
 const Layout = (props) => {
+  const { connected } = useWallet()
 
   const dispatch = useDispatch()
 
@@ -105,9 +108,11 @@ const Layout = (props) => {
           isMenuOpened={isMenuOpened}
           openLeftMenuCallBack={openMenu}
         />
-        <Navbar menuOpen={isMenuOpened} />
+        {connected && (
+          <Navbar menuOpen={isMenuOpened} />
+        )}
         <div className="main-content">{props.children}</div>
-        <Footer />
+        {connected && <Footer />}
       </div>
 
       {showRightSidebar ? <Rightbar /> : null}
