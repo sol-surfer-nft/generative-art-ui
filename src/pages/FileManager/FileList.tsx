@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { fileBrowserState, fileTreeSelector, rootFoldersSelector, fileTreeState, activeIdSelector } from '../../state/filesystem'
+import { fileBrowserState, fileTreeSelector, rootFoldersSelector, fileTreeState, activeIdSelector, allFilesSelector } from '../../state/filesystem'
 import {
   Card,
   CardBody,
@@ -95,6 +95,7 @@ const FileList = ({
   const currentFileTree = useRecoilValue(fileTreeSelector)
   const [fileTree, setFileTree] = useRecoilState(fileTreeState)
   const [folders, setFolders] = useRecoilState(rootFoldersSelector)
+  // const [files, setFiles] = useRecoilState(allFilesSelector)
   const [activeId, setActiveId] = useRecoilState(activeIdSelector)
   
   const { show } = useContextMenu();
@@ -354,12 +355,12 @@ const FileList = ({
           ))}
 
           {/* Files Listing */}
-          {/* {fileSearch && files.filter(file => file.name.toLowerCase().includes(fileSearch.toLowerCase())).map(file => (
+          {/* {fileSearch && (files as File[]).filter((file: File) => file.name.toLowerCase().includes(fileSearch.toLowerCase())).map((file: File) => (
             <Col xl={4} sm={6} key={file.id}>
               <StyledFileCard
                 className={classNames("shadow-none border", { "active-item-card": selectedItem === file.id })}
-                onClick={(e) => onFileCardClick(file.id, file.name, e.detail)}
-                onContextMenu={(e) => displayMenu(e, file.id, FILE_MENU_ID)}
+                onClick={(e: any) => onFileCardClick(file.id, file.name, e.detail)}
+                onContextMenu={(e: any) => displayMenu(e, file.id, FILE_MENU_ID)}
               >
                 <CardBody className="p-3">
                   <div className="">

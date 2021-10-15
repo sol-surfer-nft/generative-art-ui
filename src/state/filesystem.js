@@ -69,17 +69,19 @@ export const rootFoldersSelector = selector({
   },
   dangerouslyAllowMutability: true
 })
-// export const allFilesSelector = selector({
-//   key: "all-files-selector",
-//   get: ({get}) => {
-//     let fileTree = get(fileTreeState)
+export const allFilesSelector = selector({
+  key: "all-files-selector",
+  get: ({get}) => {
+    let fileTree = get(fileTreeState)
 
-//     return [
-//       ...fileTree.files,
-//       ...fileTree.folders.map(folder => folder.files)
-//     ]
-//   }
-// })
+    let result = [
+      ...fileTree.files,
+      ...fileTree.folders.map(folder => folder.files)
+    ]
+
+    return result;
+  }
+})
 // const getFoldersRecursive = folder => {
 //   return folder.folders.map(folder => {
 //     if(folder.folders)
