@@ -34,3 +34,5 @@ vscode/
 yarn-error.log
 
 .vscode/
+
+resources/

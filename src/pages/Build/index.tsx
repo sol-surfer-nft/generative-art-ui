@@ -6,6 +6,7 @@ import { Container, Collapse, Input, Form, Col, Card } from "reactstrap"
 import { attributesState } from '../../state/attributes.atoms'
 import DragDropTable from '../../resources/Tables/DragDropTables'
 import EditableTable from '../../resources/Tables/EditableTables'
+import { AddTraitModal } from './AddTraitModal'
 import { nanoid } from 'nanoid'
 
 /**
@@ -80,15 +81,29 @@ const StyledContainer = styled(Container)`
   }
 `
 
-const BuildPage = props => {
+const initialModalData: ModalData = {
+  type: "",
+  id: "",
+  name: "",
+}
+interface ModalData {
+  type: "add-trait" | "edit-trait" | "add-attribute" | "edit-attribute" | "",
+  id?: string
+  name?: string
+}
+
+const BuildPage = () => {
   const [attributes, setAttributes] = useRecoilState(attributesState)
-  const [openAttributes, setOpenAttributes] = useState([])
+  const [openAttributes, setOpenAttributes] = useState<string[]>([])
   const [formActive, setFormActive] = useState(false)
   const [formData, setFormData] = useState(initialFormState)
   const [formLoading, setFormLoading] = useState(false)
-  const [formErrors, setFormErrors] = useState(null)
+  const [formErrors, setFormErrors] = useState<string | null>(null)
 
-  const setOpen = (attributeId) => {
+  const [modal, setModal] = useState(false)
+  const [modalData, setModalData] = useState<ModalData>(initialModalData)
+
+  const setOpen = (attributeId: string) => {
     console.log('setting open with id:', attributeId)
     if(!openAttributes.includes(attributeId)) {
       setOpenAttributes(prevAtt => [...prevAtt, attributeId])
@@ -102,7 +117,7 @@ const BuildPage = props => {
     setFormActive(true)
   }
 
-  const handleChange = e => {
+  const handleChange = (e: any) => {
     setFormData(prevForm => ({
       ...prevForm,
       [e.target.name]: e.target.value
@@ -110,7 +125,7 @@ const BuildPage = props => {
   }
 
   // ToDo: Replace with react-hook-form
-  const onFormSubmit = (e = undefined) => {
+  const onFormSubmit = (e?: any) => {
     if(e) e.preventDefault()
     if(formLoading) return;
     setFormErrors(null)
@@ -150,7 +165,7 @@ const BuildPage = props => {
         // If failed, undo state change
         handleFormClickAway()
       }
-      catch (err) {
+      catch (err: any) {
         // If failed, undo state change
         setFormErrors(err)
         setFormLoading(false)
@@ -158,14 +173,14 @@ const BuildPage = props => {
     }
   }
 
-  const handleFormClickAway = e => {
+  const handleFormClickAway = (e?: any) => {
     setFormActive(false)
     setFormData(initialFormState)
     setFormLoading(false)
     setFormErrors(null)
   }
 
-  const handleFormKeyDown = keycode => {
+  const handleFormKeyDown = (keycode: number) => {
     if(!keycode) return;
     switch(keycode) {
       case 27: // escape
@@ -180,6 +195,17 @@ const BuildPage = props => {
     }
   }
 
+  const toggleAddTrait = () => {
+    setModal(true)
+    setModalData({type: "add-trait"})
+  }
+
+  const addTrait = (data: ModalData) => {
+    console.log('adding trait with data:', data)
+
+    setModal(false)
+  }
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -187,6 +213,12 @@ const BuildPage = props => {
           <title>Build | SolSurfer Generative Art Platform</title>
         </MetaTags>
         <StyledContainer fluid>
+
+          <AddTraitModal
+            isOpen={modal} // && modalType === "add-trait"
+            toggle={() => setModal(!modal)}
+            onSubmit={addTrait}
+          />
 
           <header className="page-header">
             <h4 className="page-header-title">Build</h4>
@@ -272,6 +304,14 @@ const BuildPage = props => {
                       <p style={{marginLeft: 75, marginTop: 10}}>No Traits Found</p>
                     </div>
                   )}
+                  <button
+                    type="button"
+                    className="btn btn-info"
+                    onClick={toggleAddTrait}
+                  >
+                    <i className="bx bx-plus font-size-16 align-middle me-2"></i>{" "}
+                    Add Trait
+                  </button>
                 </Collapse>
               </StyledAttribute>
             ))}
@@ -280,10 +320,10 @@ const BuildPage = props => {
           {/* <h4 style={{marginTop: 80}}>Order</h4> */}
 
           {/* Attributes List */}
-          <DragDropTable />
+          {/* <DragDropTable /> */}
 
           {/* Second Option */}
-          <EditableTable />
+          {/* <EditableTable /> */}
         </StyledContainer>
       </div>
     </React.Fragment>
