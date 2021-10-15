@@ -10,11 +10,11 @@ import { connect } from "react-redux"
 
 // User Pages
 import Dashboard from "./pages/Dashboard"
-// import Build from "./pages/Build"
-// import FileManager from "./pages/FileManager"
-// import Info from "./pages/Info"
-// import Preview from "./pages/Preview"
-// import Publish from "./pages/Publish"
+import Build from "./pages/Build"
+import FileManager from "./pages/FileManager"
+import Info from "./pages/Info"
+import Preview from "./pages/Preview"
+import Publish from "./pages/Publish"
 import Welcome from './pages/Welcome'
 
 // layouts Format
@@ -68,10 +68,18 @@ const App = props => {
               <Route exact path={["/", "/dashboard"]} render={props => {
                 return isAuth ? <Dashboard {...props} /> : <Redirect to={{pathname: "/welcome", state: { from: props.location }}} />
               }} />
-              <Route exact path="/build" render={lazy(() => import("./pages/Build/"))} />
-              <Route exact path="/preview" render={lazy(() => import("./pages/Preview/"))} />
-              <Route exact path="/info" render={lazy(() => import("./pages/Info/"))} />
-              <Route exact path="/publish" render={lazy(() => import("./pages/Publish/"))} />
+              <Route exact path="/build" render={props => {
+                return isAuth? <Build {...props} /> : <Redirect to={{pathname: "/welcome", state: { from: props.location }}} />
+              }} />
+              <Route exact path="/preview" render={props => {
+                return isAuth? <Preview {...props} /> : <Redirect to={{pathname: "/welcome", state: { from: props.location }}} />
+              }} />
+              <Route exact path="/info" render={props => {
+                return isAuth? <Info {...props} /> : <Redirect to={{pathname: "/welcome", state: { from: props.location }}} />
+              }} />
+              <Route exact path="/publish" render={props => {
+                return isAuth? <Publish {...props} /> : <Redirect to={{pathname: "/welcome", state: { from: props.location }}} />
+              }} />
               {/* <Route exact path="/profile" render={lazy(() => import ("./pages/Authentication/user-profile"))} /> */}
             </Suspense>
           </Layout>
