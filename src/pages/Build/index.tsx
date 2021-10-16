@@ -136,14 +136,14 @@ const BuildPage = () => {
     // Validate fields
     if(!formData.attributeName)
       setFormErrors("Attribute Name required")
-    else if(!formData.attributeRarity || formData.attributeRarity <= 0 || !Number(formData.attributeRarity))
-      setFormErrors("Form rarity must be a number > 0")
+    // else if(!formData.attributeRarity || formData.attributeRarity <= 0 || !Number(formData.attributeRarity))
+    //   setFormErrors("Form rarity must be a number > 0")
     else {
       const newAttribute = {
         id: nanoid(),
         name: formData.attributeName,
         desc: formData.attributeDesc || undefined,
-        rarity: formData.attributeRarity,
+        rarity: formData.attributeRarity || 1,
         traits: []
       }
       console.log('new attribute:', newAttribute)
@@ -315,10 +315,10 @@ const BuildPage = () => {
                 <Input type="text" autoFocus className="form-control" value={formData.attributeName} onChange={handleChange} id="attributeNameId" placeholder="Name" name="attributeName" />
               </Col>
 
-              <Col xs={12}>
+              {/* <Col xs={12}>
                 <label className="visually-hidden" htmlFor="attributeRarityId">Preference</label>
                 <Input type="number" className="rarity-input" value={formData.attributeRarity} onChange={handleChange} name="attributeRarity" id="attributeRarityId" />
-              </Col>
+              </Col> */}
 
               <Col xs={12}>
                 <button type="submit" disabled={formLoading} className="btn btn-primary add-attribute-button w-md">Add</button>

@@ -61,6 +61,12 @@ export const AddTraitModal = ({
   //     getImage();
   // }, [image])
 
+  useEffect(() => {
+    if(!isOpen) {
+      closeForm();
+    }
+  }, [isOpen])
+
   const onCropComplete = (croppedAreaPercentage: any, croppedAreaPixels: any) => {
 		setCroppedArea(croppedAreaPixels);
 	};
@@ -126,8 +132,7 @@ export const AddTraitModal = ({
     setTrait(initialData);
     setErrors(null)
     setLoading(false)
-    setImage(null)
-    setImageFile(null)
+    clearImage()
     toggle();
   }
 
