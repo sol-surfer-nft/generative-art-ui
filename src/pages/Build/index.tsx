@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import MetaTags from 'react-meta-tags';
 import { Container, Collapse, Input, Form, Col, Card } from "reactstrap"
 import { attributesState } from '../../state/attributes.atoms'
-import DragDropTable from '../../resources/Tables/DragDropTables'
-import EditableTable from '../../resources/Tables/EditableTables'
-import { AddTraitModal } from './AddTraitModal'
+// import DragDropTable from '../../resources/Tables/DragDropTables'
+// import EditableTable from '../../resources/Tables/EditableTables'
+import { AddTraitModal, AddTraitData } from './AddTraitModal'
 import { nanoid } from 'nanoid'
 
 /**
@@ -100,8 +100,10 @@ const BuildPage = () => {
   const [formLoading, setFormLoading] = useState(false)
   const [formErrors, setFormErrors] = useState<string | null>(null)
 
-  const [modal, setModal] = useState(false)
-  const [modalData, setModalData] = useState<ModalData>(initialModalData)
+  const [showModal, setShowModal] = useState(false)
+  // const [modalData, setModalData] = useState<ModalData>(initialModalData)
+
+  const [activeFormId, setActiveFormId] = useState("") // id of the attribute it is for
 
   const setOpen = (attributeId: string) => {
     console.log('setting open with id:', attributeId)
@@ -195,15 +197,79 @@ const BuildPage = () => {
     }
   }
 
-  const toggleAddTrait = () => {
-    setModal(true)
-    setModalData({type: "add-trait"})
+  const toggleAddTrait = (attributeId: string) => {
+    setActiveFormId(attributeId)
+    setShowModal(true)
   }
 
-  const addTrait = (data: ModalData) => {
+  const addTrait = (data: AddTraitData) => {
     console.log('adding trait with data:', data)
 
-    setModal(false)
+    if(!activeFormId) {
+      console.log('error: active form id not found')
+      return;
+    }
+
+    const foundAttribute = attributes.find(attribute => attribute.id === activeFormId)
+    if(!foundAttribute) {
+      console.log('could not find attribute')
+      return;
+    }
+
+    const newTrait = {
+      ...data,
+      id: nanoid(6),
+      file: data.file || null,
+      order: data.order || foundAttribute.traits.length
+    }
+
+    // add the data to activeFormId
+    setAttributes(prevAttributes => ([
+      ...prevAttributes.map(attribute => {
+        if(attribute.id === activeFormId) {
+          return {
+            ...attribute,
+            traits: [
+              ...attribute.traits,
+              newTrait
+            ]
+          }
+        }
+        return attribute
+      })
+    ]))
+
+
+    // cleanup
+    closeModal();
+  }
+
+  const editTrait = (attributeId: string, traitId: string) => {
+    console.log('edit trait not working yet')
+
+    // toggle edit modal
+  }
+
+  const removeTrait = (attributeId: string, traitId: string) => {
+    console.log('removing trait with id:', traitId)
+
+    // remove the data from activeFormId
+    setAttributes(prevAttributes => ([
+      ...prevAttributes.map(attribute => {
+        if(attribute.id === attributeId) {
+          return {
+            ...attribute,
+            traits: attribute.traits.filter(trait => trait.id !== traitId)
+          }
+        }
+        return attribute
+      })
+    ]))
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+    setActiveFormId("")
   }
 
   return (
@@ -215,9 +281,9 @@ const BuildPage = () => {
         <StyledContainer fluid>
 
           <AddTraitModal
-            isOpen={modal} // && modalType === "add-trait"
-            toggle={() => setModal(!modal)}
-            onSubmit={addTrait}
+            isOpen={showModal} // && modalType === "add-trait"
+            toggle={closeModal}
+            addTrait={addTrait}
           />
 
           <header className="page-header">
@@ -272,6 +338,11 @@ const BuildPage = () => {
               </div>
               <p className="attribute-item-text" style={{fontWeight:"bold"}}>Traits</p>
             </li>
+            {attributes.length === 0 && (
+              <div style={{padding: "10px 20px"}}>
+                <p>No Attributes Exist Yet. Click &apos;Add Attribute&apos; to get started!</p>
+              </div>
+            )}
             {attributes.map((attribute, index) => (
               <StyledAttribute key={attribute.id}>
                 <Card>
@@ -288,14 +359,33 @@ const BuildPage = () => {
                   {attribute.traits.map((trait, index) => (
                     <div className="attribute-item-container" key={trait.id}>
                       <div className="attribute-index">
+                        {/* vertical list with: index, delete trash icon button, edit button */}
                         <p style={{marginBottom:0, fontWeight: "bold"}}>{index}</p>
+                        <button
+                          type="button"
+                          className="btn btn-outline-light btn-sm btn-small"
+                          onClick={() => editTrait(attribute.id, trait.id)}
+                        >
+                          <i className="bx bx-pencil font-size-16 align-middle"></i>{" "}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline-light btn-sm btn-small"
+                          onClick={() => removeTrait(attribute.id, trait.id)}
+                        >
+                          <i className="bx bx-trash-alt font-size-16 align-middle"></i>{" "}
+                        </button>
                       </div>
                       <div className="attribute-trait-item">
                         <p className="attribute-trait-text">Name: {trait.name}</p>
                         {trait.desc && <p className="attribute-trait-text">Desc: {trait.desc}</p>}
                         <p className="attribute-trait-text">Rarity: {trait.rarity}</p>
-                        <p className="attribute-trait-text">File Type: {trait.fileType}</p>
-                        <p className="attribute-trait-text">Url: {trait.url}</p>
+                        {trait.order && <p className="attribute-trait-text">Order: {trait.order}</p>}
+                        {trait.file && <p className="attribute-trait-text">File Type: {trait.file.fileType || "none"}</p>}
+                        {trait.file && <p className="attribute-trait-text">Url: {trait.file.url || "none"}</p>}
+                      </div>
+                      <div className="attribute-left">
+                        {trait.file && <img src={trait.file.toString()} alt="trait-image" height={150} width={150} />}
                       </div>
                     </div>
                   ))}
@@ -304,10 +394,12 @@ const BuildPage = () => {
                       <p style={{marginLeft: 75, marginTop: 10}}>No Traits Found</p>
                     </div>
                   )}
+                  
                   <button
                     type="button"
                     className="btn btn-info"
-                    onClick={toggleAddTrait}
+                    style={{marginBottom: 10, marginTop: 10}}
+                    onClick={() => toggleAddTrait(attribute.id)}
                   >
                     <i className="bx bx-plus font-size-16 align-middle me-2"></i>{" "}
                     Add Trait
@@ -333,6 +425,7 @@ const BuildPage = () => {
 const StyledAttribute = styled.li`
   background: #fff;
   border-radius: 10px;
+  margin-bottom: 20px;
 
   .attribute-item {
     display: flex;
@@ -363,6 +456,14 @@ const StyledAttribute = styled.li`
     margin-left: 10px;
     padding-left: 10px;
     padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    * {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
   }
   .attribute-trait-item {
     flex: 1;
