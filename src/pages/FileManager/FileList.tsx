@@ -470,7 +470,7 @@ const FileList = ({
                         </p>
                       </div>
                       <div className="align-self-end ms-2">
-                        <p className="text-muted mb-0">{folder.files[0]?.data.size || "2"}GB</p>
+                        <p className="text-muted mb-0">{folder.files[0]?.data?.size || "2"}GB</p>
                       </div>
                     </div>
                   </div>

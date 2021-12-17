@@ -55,6 +55,7 @@ const Welcome = () => {
 
           <Card className="section-card" style={{padding: 20}}>
             <h1 className="page-heading">Get Started</h1>
+            <h3 className="page-heading" style={{color: "yellow"}}>A long time ago, in a galaxy far, far away...</h3>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem culpa optio excepturi nihil voluptate error, vero eius ex veniam molestiae? Eum quas quisquam saepe ex enim quod eius temporibus ipsa.
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, veniam vel nihil nulla quidem pariatur veritatis consequuntur, repellat magni dolorum ipsa natus quam animi. Consequuntur sunt error facilis cum sequi.

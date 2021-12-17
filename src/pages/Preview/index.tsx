@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MetaTags from 'react-meta-tags';
 import {
-  Container, Col, Row, Card, CardBody, CardTitle, CardText, Spinner, Button, Input, Form, FormGroup
+  Container, Col, Row, Card, CardBody, CardTitle, CardText, Spinner, Button, Input, Form, FormGroup, Collapse
 } from "reactstrap"
 import { useRecoilState } from 'recoil'
 import { attributesState } from '../../state/attributes.atoms'
@@ -29,6 +29,7 @@ const Preview = () => {
   const [errors, setErrors] = useState<string | null>(null)
 
   const [dimensions, setDimensions] = useState({height: 200, width: 200})
+  const [showAdvancedForm, setShowAdvancedForm] = useState(false)
  
   const [generatedImages, setGeneratedImages] = useState<number[][]>([])
 
@@ -63,6 +64,7 @@ const Preview = () => {
       let attribute = attributes[i]
       if(!attribute.traits || attribute.traits.length < 1) {
         imageIdArray[i] = -1;
+        continue;
       }
       let randomTraitIndex = Math.floor(Math.random() * attribute.traits.length)
       imageIdArray[i] = randomTraitIndex
@@ -70,6 +72,10 @@ const Preview = () => {
 
     return imageIdArray;
   }
+
+  useEffect(() => {
+    console.log('generated:', generatedImages)
+  }, [generatedImages])
 
   return (
     <>
@@ -94,19 +100,26 @@ const Preview = () => {
               generateImages()
             }}>
               <FormGroup>
-
-              <Input
-                min={0}
-                max={MAX_GEN}
-                type="number"
-                value={numberToGenerate}
-                onChange={(e: any) => {
-                  setNumberToGenerate(parseInt(e.target.value))
-                }}
-                style={{display:'inline-block'}}
-              />
-              <Button color="primary" onClick={() => generateImages()}>Generate {numberToGenerate} Random NFTs</Button>
+                <Input
+                  min={0}
+                  max={MAX_GEN}
+                  type="number"
+                  value={numberToGenerate}
+                  onChange={(e: any) => {
+                    setNumberToGenerate(parseInt(e.target.value))
+                  }}
+                  style={{display:'inline-block'}}
+                />
+                <Button color="primary" onClick={() => generateImages()}>Generate {numberToGenerate} Random NFTs</Button>
               </FormGroup>
+              {/* Advanced Options */}
+
+              <Collapse isOpen={showAdvancedForm}>
+                <FormGroup>
+                  <Input type="number" value={dimensions.width} onChange={(e: any) => setDimensions(prev => ({...prev, width: e.target.value}))} />
+                  <Input type="number" value={dimensions.height} onChange={(e: any) => setDimensions(prev => ({...prev, height: e.target.value}))} />
+                </FormGroup>
+              </Collapse>
             </Form>
           </div>
 
@@ -121,15 +134,14 @@ const Preview = () => {
                       <p>Click the button above to generate some images</p>
                     </Col>
                   )}
-
-                  {generatedImages.map((imageIdArray, index) => {
-                        <p key={Math.random()}>{imageIdArray.toString()} [{imageIdArray.map(number => ` ${number},`)}]</p>
-                    // <Col sm={6} key={`${index}-${imageIdArray[0] || 5}`}>
-                    //   <Card className="p-1 border shadow-none" style={{padding: 40}}>
-                    //     {/* <img src={imageIdArray.toString()} alt={`Generated Image ${index}: id(${imageIdArray.toString()})`} height={dimensions.height} width={dimensions.width} /> */}
-                    //   </Card>
-                    // </Col>
-                  })}
+                  {generatedImages.map((imageIdArray, index) => (
+                    <Col sm={6} key={`${index}-${imageIdArray[0] || 5}`}>
+                      <Card className="p-1 border shadow-none" style={{padding: 40}}>
+                        <p>{imageIdArray.reduce((prevValue, nextInt) => prevValue + nextInt.toString() + ", ", "")}</p>
+                          {/* <img src={imageIdArray.toString()} alt={`Generated Image ${index}: id(${imageIdArray.toString()})`} height={dimensions.height} width={dimensions.width} /> */}
+                      </Card>
+                    </Col>
+                  ))}
               {/* </Row> */}
             </div>
           )}
